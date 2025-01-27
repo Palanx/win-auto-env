@@ -1,60 +1,55 @@
-# Win11 Environment Builder
+# Windows Automatic Environment
 
 ### How to Execute
 Double click the `env-builder.ps1` file and follow the instructions.
 
 ### Apps
 #### Dev Apps
-| App | command | location | version |
-| --- | --- | --- | --- |
-| JetBrains.Toolbox | `winget install -e --id JetBrains.Toolbox` | ??? | latest |
-| JetBrains.Rider | Manual | ??? | latest |
-| JetBrains.GoLand | Manual | ??? | latest |
-| JetBrains.DataGrip | Manual | ??? | latest |
-| JetBrains.WebStorm | Manual | ??? | latest |
-| JetBrains.AndroidStudio | Manual | ??? | latest |
-| Unity Hub | `winget install -e --id Unity.UnityHub` | ??? | latest |
-| Unity 6 | Manual | ??? | 6 |
-| Windows 11 SDK | Manual by VS installer in Unity | ??? | latest |
-| Visual Studio Code | `winget install -e --id Microsoft.VisualStudioCode` | ??? | latest |
-| Tabby | `winget install -e --id Eugeny.Tabby` | ??? | latest |
-| PowerShell 7 | `winget install -e --id Microsoft.PowerShell` | ??? | latest |
-| Node | `winget install -e --id OpenJS.NodeJS.LTS` | ??? | latest LTS |
-| Go | Manual | ??? | latest |
-| Git | `winget install -e --id Git.Git --location "$env:ProgramFiles\Git"` | `%ProgramFiles%\Git` | latest |
-| Git LFS | `winget install -e --id GitHub.GitLFS` | ??? | latest |
-| Fork | `winget install -e --id Fork.Fork --location "$($env:LocalAppData)\Fork"` | `%LocalAppData%\Fork` | latest |
-| Postman | `winget install -e --id Postman.Postman` | ??? | latest |
+| App | installer | location | version | notes |
+| --- | --- | --- | --- | --- |
+| JetBrains.Toolbox | winget | default | latest | The custom path to install apps using this tool is automatically modified to `D:\Program Files\JetBrains\Toolbox` after install. |
+| Unity Hub | standalone | `D:\Program Files\Unity Hub` | latest | |
+| Windows SDK | winget | default | 10.0.26100 | |
+| Windows WDK | winget | default | 10.0.26100 | |
+| Visual Studio Code | winget | default | latest | |
+| Tabby | winget | default | latest | |
+| PowerShell | winget | default | latest | |
+| Node | winget | default | latest LTS | |
+| Go | winget | default | 1.18.10 | |
+| Git | winget | default | latest | - **Editor Option**: VisualStudioCode<br/> - **Custom Editor Path**:<br/> - **Default Branch Option**:  <br/> - **Path Option**: Cmd<br/> - **SSH Option**: OpenSSH<br/> - **Tortoise Option**: false<br/> - **CURL Option**: OpenSSL<br/> - **CRLF Option**: Input<br/> - **CRLFCommitAsIs Bash Terminal Option**: MinTTY<br/> - **Git Pull Behavior Option**: Merge<br/> - **Use Credential Manager**: Enabled<br/> - **Performance Tweaks FSCache**: Enabled<br/> - **Enable Symlinks**: Disabled<br/> - **Enable FSMonitor**: Disabled |
+| Git LFS | winget | default | latest | |
+| Fork | winget | default | latest | |
+| Postman | winget | default | latest | |
+| Powertoys | winget | default | latest | |
 |  |  |  |  |
 
 
 #### OS Apps
-| App | command | location | version |
-| --- | --- | --- | --- |
-| Powertoys | `winget install -e --id Microsoft.PowerToys` | ??? | latest |
-| Karspersky Premium | Manual | ??? | latest |
-| Lightshot | `winget install -e --id Skillbrains.Lightshot` and Manual config | ??? | latest |
-| Nvidia Experience | `winget install -e --id Nvidia.GeForceExperience` | ??? | latest |
-| Logitech G HUB | `winget install -e --id Logitech.GHUB` | ??? | latest |
-| 7-zip | `winget install -e --id 7zip.7zip` | ??? | latest |
-| DirectX | `winget install -e --id Microsoft.DirectX` | ??? | latest |
-| VLC | `winget install -e --id VideoLAN.VLC` | ??? | latest |
-|  |  |  |  |
+| App | command | location | version | notes |
+| --- | --- | --- | --- | --- |
+| Karspersky Premium | Manual | default | latest | The .exe is compiled for each account, so the cretential are included and the installer can't be automated or shared. |
+| Lightshot | winget | default | latest | OS config modified to allow the app use. |
+| Nvidia App | standalone | default | latest |  |
+| Logitech G HUB | winget | default | latest | ??? |
+| 7-zip | winget| default | latest | Download the `SetUserFTA` app to assing the file extensions `.7z`, `.zip`, `.rar`, `.tar`, `.gz`, `.bz2`, `.xz`, `.cab`, `.lzh`, `.arj`, `.z`, `.001` |
+| DirectX | winget | default | latest | |
+| MPV | winget | default | latest | |
+|  |  |  |  | |
 
 #### Personal Apps
-| App | command | location | version |
-| --- | --- | --- | --- |
-| Chrome | `winget install -e --id Google.Chrome` | ??? | latest |
-| Microsoft To Do | Manual | ??? | latest |
-| Obsidian | `winget install -e --id Obsidian.Obsidian --location "C:\Folder\Software.Name"`  | ??? | latest |
-| iCloud | Manual | ??? | latest |
-| Telegram | `winget install -e --id Telegram.TelegramDesktop` | ??? | latest |
-| WhatsApp | `winget install -e --id WhatsApp.WhatsApp` | ??? | latest |
-| Spotify | `winget install -e --id Spotify.Spotify` | ??? | latest |
-| Steam | `winget install -e --id Valve.Steam` | ??? | latest |
-| Gog | `winget install -e --id GOG.Galaxy` | ??? | latest |
-| Epic | `winget install -e --id EpicGames.EpicGamesLauncher` | ??? | latest |
-| Discord | `winget install -e --id Discord.Discord` | ??? | latest |
-| qBittorrent | `winget install -e --id qBittorrent.qBittorrent` | ??? | latest |
-| Clipchamp | Manual | ??? | latest |
+| App | command | location | version | notes |
+| --- | --- | --- | --- | --- |
+| Chrome | winget | default | latest | |
+| Microsoft To Do | winget | default | latest | |
+| Obsidian | winget  | default | latest | |
+| iCloud | winget | default | latest | Config what files will be sync must by made by hand. |
+| Telegram | winget | default | latest | |
+| WhatsApp | winget | default | latest | |
+| Spotify | winget | default | latest | |
+| Steam | winget | `G:\Program Files\Steam` | latest | |
+| GoG | winget | `G:\Program Files (x86)\GOG Galaxy` | latest | |
+| Epic | winget | `G:\Program Files (x86)\Epic Games` | latest | |
+| Discord | winget | default | latest | |
+| qBittorrent | winget | default | latest | |
+| VegasPro 21 | Manual | default | latest | The .exe can't be downloaded by an automated tool. |
 |  |  |  |  |
