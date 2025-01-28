@@ -1,17 +1,19 @@
 Import-Module "$PSScriptRoot\shared-functions.psm1" -Force
 
 # Define the folder containing the scripts
-$CommonInstallersFolder = "$PSScriptRoot\common\"
+$OSInstallersFolder = "$PSScriptRoot\os\"
 $DevInstallersFolder = "$PSScriptRoot\dev\"
+$PersonalInstallersFolder = "$PSScriptRoot\personal\"
 
 # Get all .ps1 scripts in the folders
-$CommonScripts = Get-ChildItem -Path $CommonInstallersFolder -Filter "*.ps1" | Sort-Object Name
+$OSScripts = Get-ChildItem -Path $OSInstallersFolder -Filter "*.ps1" | Sort-Object Name
 $DevScripts = Get-ChildItem -Path $DevInstallersFolder -Filter "*.ps1" | Sort-Object Name
-$Scripts = $CommonScripts + $DevScripts
+$PersonalScripts = Get-ChildItem -Path $PersonalInstallersFolder -Filter "*.ps1" | Sort-Object Name
+$Scripts = $OSScripts + $DevScripts + $PersonalScripts
 
 # Check if any scripts were found
 if ($Scripts.Count -eq 0) {
-    Write-Host "No PowerShell scripts found in $CommonInstallersFolder and $DevInstallersFolder."
+    Write-Host "No PowerShell scripts found in $OSInstallersFolder, $DevInstallersFolder and $PersonalInstallersFolder."
     exit
 }
 
@@ -22,7 +24,7 @@ $FailedScripts = @()
 
 # Loop through each script and execute it sequentially
 foreach ($Script in $Scripts) {
-    Write-Host "$StartBold Executing:$EndBold $StartUnderline$($Script.Name)$EndUnderline"
+    Write-Host "${StartBold}Executing:$EndBold $StartUnderline$($Script.Name)$EndUnderline"
 
     try {
         # Start the script and wait for it to finish
@@ -38,7 +40,7 @@ foreach ($Script in $Scripts) {
         $FailedScripts += $Script.Name
     }
 
-    Write-Host "$StartBold Completed:$EndBold $StartUnderline$($Script.Name)$EndUnderline`n"
+    Write-Host "{$StartBold}Completed:$EndBold $StartUnderline$($Script.Name)$EndUnderline`n"
 }
 
 # Display final status

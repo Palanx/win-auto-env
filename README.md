@@ -20,7 +20,6 @@ Double click the `env-builder.ps1` file and follow the instructions.
 | Git LFS | winget | default | latest | |
 | Fork | winget | default | latest | |
 | Postman | winget | default | latest | |
-| Powertoys | winget | default | latest | |
 |  |  |  |  |
 
 
@@ -34,6 +33,7 @@ Double click the `env-builder.ps1` file and follow the instructions.
 | 7-zip | winget| default | latest | Download the `SetUserFTA` app to assing the file extensions `.7z`, `.zip`, `.rar`, `.tar`, `.gz`, `.bz2`, `.xz`, `.cab`, `.lzh`, `.arj`, `.z`, `.001` |
 | DirectX | winget | default | latest | |
 | MPV | winget | default | latest | |
+| Powertoys | winget | default | latest | |
 |  |  |  |  | |
 
 #### Personal Apps
@@ -51,5 +51,5 @@ Double click the `env-builder.ps1` file and follow the instructions.
 | Epic | winget | `G:\Program Files (x86)\Epic Games` | latest | |
 | Discord | winget | default | latest | |
 | qBittorrent | winget | default | latest | |
-| VegasPro 21 | Manual | default | latest | The .exe can't be downloaded by an automated tool. |
+| VegasPro 21 | Manual | default | latest | The .exe can't be downloaded by an automated tool. [link](https://dl03.magix.com/vegasproedit21_dlm_47zge9.exe) |
 |  |  |  |  |
