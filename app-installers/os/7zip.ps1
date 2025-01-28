@@ -47,19 +47,20 @@ try {
         Start-Process -FilePath $SetUserFTA -ArgumentList "$ext 7zFM.exe" -Wait -NoNewWindow
     }
 
-    Write-Host "$UTFCheckMark File associations updated successfully!"
+    # Check the last exit code
+    if ($LASTEXITCODE -eq 0) {
+        Write-Host "$UTFCheckMark File associations updated successfully!" -ForegroundColor Green
+    } else {
+        Write-Host "$UTFCrossMark Error setting file asosiation to 7-Zip (Exit Code: $LASTEXITCODE)" -ForegroundColor Red
+        return;
+    }    
 
     # Restart Explorer to apply changes
     Write-Host "Restarting Windows Explorer..."
-    Stop-Process -Name explorer -Force
-    Start-Process explorer
+    # Start-Process -FilePath "cmd.exe" -ArgumentList "/c taskkill /f /im explorer.exe & start explorer.exe" -WindowStyle Hidden
+    # TODO: this fucking line is causing bugs!
 
-    # Check the last exit code
-    if ($LASTEXITCODE -eq 0) {
-        Write-Host "$UTFCheckMark 7-Zip setup completed." -ForegroundColor Green
-    } else {
-        Write-Host "$UTFCrossMark Error setting file asosiation to 7-Zip  (Exit Code: $LASTEXITCODE)" -ForegroundColor Red
-    }
+    Write-Host "$UTFCheckMark 7-Zip setup completed." -ForegroundColor Green
 } catch {
     Write-Host "$UTFCrossMark Exception occurred: $_" -ForegroundColor Red
 }
