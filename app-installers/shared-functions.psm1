@@ -44,13 +44,11 @@ function Start-InstallWingetPackage {
             return $true
         }
 
-        # Reset before running winget
-        $LASTEXITCODE = 0
         Write-Host "Installing $PackageName..." -ForegroundColor Yellow
-        Start-Process -FilePath "winget" -ArgumentList "install -e --id $PackageID $ExtraArguments" -NoNewWindow -Wait
+        $process = Start-Process -FilePath "winget" -ArgumentList "install -e --id $PackageID $ExtraArguments" -NoNewWindow -Wait
 
         # Check the last exit code
-        if ($LASTEXITCODE -eq 0) {
+        if ($process.ExitCode -eq 0) {
             Write-Host "$UTFCheckMark $PackageName in NOW installed." -ForegroundColor Green
             return $true
         } else {

@@ -40,7 +40,7 @@ foreach ($Script in $Scripts) {
         $FailedScripts += $Script.Name
     }
 
-    Write-Host "{$StartBold}Completed:$EndBold $StartUnderline$($Script.Name)$EndUnderline`n"
+    Write-Host "${StartBold}Completed:$EndBold $StartUnderline$($Script.Name)$EndUnderline`n"
 }
 
 # Display final status

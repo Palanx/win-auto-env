@@ -6,7 +6,7 @@ $ExtraArguments="--source msstore --accept-package-agreements"
 
 try {
     if (Get-IsWingetPackageInstalled -PackageID $PackageID){
-        return $true
+        return
     }
 
     # Reset before running winget
@@ -17,12 +17,9 @@ try {
     # Check the last exit code
     if ($LASTEXITCODE -eq 0) {
         Write-Host "$UTFCheckMark $PackageName in NOW installed." -ForegroundColor Green
-        return $true
     } else {
         Write-Host "$UTFCrossMark Error installing $PackageID (Exit Code: $LASTEXITCODE)" -ForegroundColor Red
-        return $false
     }
 } catch {
     Write-Host "$UTFCrossMark Exception occurred: $_" -ForegroundColor Red
-    return $false
 }

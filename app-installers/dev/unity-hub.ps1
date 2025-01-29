@@ -17,14 +17,11 @@ try {
             Write-Host "Downloading UnityHub installer into $UnityHubInstaller..."
             Invoke-WebRequest -Uri $UnityHubDownloadURL -OutFile $UnityHubInstaller
         }
-
-        # Reset before running winget
-        $LASTEXITCODE = 0
         Write-Host "Installing UnityHub..." -ForegroundColor Yellow
-        Start-Process -FilePath $UnityHubInstaller -ArgumentList "/S /D=`"D:\Program Files\Unity Hub`"" -Wait
+        $process = Start-Process -FilePath $UnityHubInstaller -ArgumentList "/S /D=`"D:\Program Files\Unity Hub`"" -Wait
 
         # Check the last exit code
-        if ($LASTEXITCODE -eq 0) {
+        if ($process.ExitCode -ne 0) {
             Write-Host "$UTFCheckMark UnityHub in NOW installed." -ForegroundColor Green
         } else {
             Write-Host "$UTFCrossMark Error installing UnityHub (Exit Code: $LASTEXITCODE)" -ForegroundColor Red
