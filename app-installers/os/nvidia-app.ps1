@@ -1,11 +1,12 @@
-Import-Module "$PSScriptRoot\..\shared-functions.psm1" -Force
+Import-Module "$PSScriptRoot\..\..\shared\winget-utils.psm1" -Force
+Import-Module "$PSScriptRoot\..\..\shared\global-variables.psm1" -Force
 
 # Define paths
 $NVIDIAAppInstallerPath = "$env:USERPROFILE\Downloads\NVIDIA_app.exe"
 
 try {
     # Download NVIDIA App if not found
-    if (!(Get-IsPathExistent -Path $NVIDIAAppInstallerPath)) {
+    if (!(Test-Path $NVIDIAAppInstallerPath)) {
         # Reset before running winget
         $LASTEXITCODE = 0
         Write-Host "Downloading NVIDIA App..." -ForegroundColor Yellow

@@ -1,4 +1,5 @@
-Import-Module "$PSScriptRoot\..\shared-functions.psm1" -Force
+Import-Module "$PSScriptRoot\..\..\shared\winget-utils.psm1" -Force
+Import-Module "$PSScriptRoot\..\..\shared\global-variables.psm1" -Force
 
 # Define the installation path for JetBrains Toolbox apps
 $CustomInstallPath = "D:\Program Files\JetBrains\Toolbox"
@@ -21,12 +22,12 @@ try {
     Start-Process -FilePath "$env:LOCALAPPDATA\JetBrains\Toolbox\bin\jetbrains-toolbox.exe"
 
     # Ensure Toolbox settings file exists
-    if (!(Get-IsPathExistent -Path $ToolboxSettingsPath)) {
+    if (!(Test-Path $ToolboxSettingsPath)) {
         Write-Host "Toolbox settings file not found. Ensure Toolbox has been opened at least once." -ForegroundColor Red
         return;
     } else {
         # Ensure the directory exists
-        if (!(Get-IsPathExistent -Path $CustomInstallPath)) {
+        if (!(Test-Path $CustomInstallPath)) {
             New-Item -ItemType Directory -Path $CustomInstallPath -Force
         }
 

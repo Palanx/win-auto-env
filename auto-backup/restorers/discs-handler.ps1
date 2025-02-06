@@ -1,5 +1,5 @@
 # Define backup file location
-$BackupFile = "D:\DriveLetterBackup.txt"  # Change this to your preferred backup location
+$BackupFile = "D:\AutoBackups\DriveLetterBackup.txt"  # Change this to your preferred backup location
 
 if (!(Test-Path $BackupFile)) {
     Write-Host "Backup file not found! Exiting..."
@@ -22,6 +22,4 @@ foreach ($line in $backupData) {
     }
 }
 
-Write-Host "Restore completed! Restarting Explorer..."
-Stop-Process -Name explorer -Force
-Start-Process explorer
+# TODO: Required restart explorer

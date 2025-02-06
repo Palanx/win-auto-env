@@ -1,6 +1,7 @@
-Import-Module "$PSScriptRoot\..\shared-functions.psm1" -Force
+Import-Module "$PSScriptRoot\..\..\shared\winget-utils.psm1" -Force
+Import-Module "$PSScriptRoot\..\..\shared\global-variables.psm1" -Force
 
-$PackageID="WhatsApp.WhatsApp"
+$PackageID="9NKSQGP7F2NH"
 $PackageName="WhatsApp"
 $ExtraArguments="--silent"
 

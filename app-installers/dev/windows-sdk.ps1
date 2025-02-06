@@ -1,4 +1,5 @@
-Import-Module "$PSScriptRoot\..\shared-functions.psm1" -Force
+Import-Module "$PSScriptRoot\..\..\shared\winget-utils.psm1" -Force
+Import-Module "$PSScriptRoot\..\..\shared\global-variables.psm1" -Force
 
 $PackageID="Microsoft.WindowsSDK.10.0.26100"
 $PackageName="Windows Software Developer Kit"

@@ -1,4 +1,5 @@
-Import-Module "$PSScriptRoot\..\shared-functions.psm1" -Force
+Import-Module "$PSScriptRoot\..\..\shared\winget-utils.psm1" -Force
+Import-Module "$PSScriptRoot\..\..\shared\global-variables.psm1" -Force
 
 # Define paths
 $SetUserFTA = "$env:USERPROFILE\Downloads\SetUserFTA.exe"
@@ -19,7 +20,7 @@ try {
     }
 
     # Download SetUserFTA.exe if not found
-    if (!(Get-IsPathExistent -Path $SetUserFTA)) {
+    if (!(Test-Path $SetUserFTA)) {
         # Reset before running winget
         $LASTEXITCODE = 0
         Write-Host "Downloading SetUserFTA..." -ForegroundColor Yellow
@@ -53,12 +54,9 @@ try {
     } else {
         Write-Host "$UTFCrossMark Error setting file asosiation to 7-Zip (Exit Code: $LASTEXITCODE)" -ForegroundColor Red
         return;
-    }    
+    }
 
-    # Restart Explorer to apply changes
-    Write-Host "Restarting Windows Explorer..."
-    # Start-Process -FilePath "cmd.exe" -ArgumentList "/c taskkill /f /im explorer.exe & start explorer.exe" -WindowStyle Hidden
-    # TODO: this fucking line is causing bugs!
+    # TODO: Required restart explorer
 
     Write-Host "$UTFCheckMark 7-Zip setup completed." -ForegroundColor Green
 } catch {

@@ -1,4 +1,5 @@
-Import-Module "$PSScriptRoot\..\shared-functions.psm1" -Force
+Import-Module "$PSScriptRoot\..\..\shared\winget-utils.psm1" -Force
+Import-Module "$PSScriptRoot\..\..\shared\global-variables.psm1" -Force
 
 # Define paths
 $UnityHubInstaller = "$env:TEMP\UnityHubSetup.exe"
@@ -7,11 +8,11 @@ $UnityHubDownloadURL = "https://public-cdn.cloud.unity3d.com/hub/prod/UnityHubSe
 
 try {
     # Install UnityHub if not found
-    if (Get-IsPathExistent -Path $UnityHubPath) {
+    if (Test-Path $UnityHubPath) {
         Write-Host "$UTFCheckMark UnityHub is already installed." -ForegroundColor Green
     } else {
         # Download NVIDIA App if not found
-        if (Get-IsPathExistent -Path $UnityHubInstalle) {
+        if (Test-Path $UnityHubInstalle) {
             Write-Host "UnityHub already in $UnityHubInstaller."
         } else {
             Write-Host "Downloading UnityHub installer into $UnityHubInstaller..."

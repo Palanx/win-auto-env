@@ -1,5 +1,5 @@
 # Define backup location
-$BackupPath = "D:\ExplorerFavoritesBackup" # Change this to your preferred backup locatio
+$BackupPath = "D:\AutoBackups\ExplorerFavoritesBackup" # Change this to your preferred backup locatio
 $QuickAccessPath1 = "$env:APPDATA\Microsoft\Windows\Recent\AutomaticDestinations"
 $QuickAccessPath2 = "$env:APPDATA\Microsoft\Windows\Recent\CustomDestinations"
 $RegistryBackup = "$BackupPath\QuickAccessRegistry.reg"

@@ -1,6 +1,6 @@
 # Define backup and restore paths
 $ChromeProfilePath = "$env:LOCALAPPDATA\Google\Chrome\User Data" # Change this to your preferred backup location
-$BackupPath = "D:\ChromeBackup"
+$BackupPath = "D:\AutoBackups\ChromeBackup"
 
 if (Test-Path $ChromeProfilePath) {
     Write-Host "Backing up Chrome profile..."

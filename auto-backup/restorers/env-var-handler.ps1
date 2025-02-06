@@ -1,5 +1,5 @@
 # Define backup file location
-$BackupFile = "D:\EnvBackup.txt" # Change this to your preferred backup location
+$BackupFile = "D:\AutoBackups\EnvBackup.txt" # Change this to your preferred backup location
 
 if (!(Test-Path $BackupFile)) {
     Write-Host "Backup file not found! Exiting..."
@@ -18,6 +18,4 @@ Get-Content $BackupFile | ForEach-Object {
     Write-Host "Restored: $varName"
 }
 
-Write-Host "Environment variables restored! Restarting Explorer..."
-Stop-Process -Name explorer -Force
-Start-Process explorer
+# TODO: Required restart explorer

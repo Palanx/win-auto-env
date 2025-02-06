@@ -1,7 +1,7 @@
 # Define paths
 $ProfilePath = "$env:USERPROFILE\Documents\PowerShell\Microsoft.PowerShell_profile.ps1"
 $ModulesPath = "$env:USERPROFILE\Documents\PowerShell\Modules"
-$BackupPath = "D:\PowerShellBackup"  # Change this to your preferred backup location
+$BackupPath = "D:\AutoBackups\PowerShellBackup"  # Change this to your preferred backup location
 
 Write-Host "Backing up PowerShell profile and modules..."
 

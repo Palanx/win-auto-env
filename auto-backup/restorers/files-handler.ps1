@@ -1,5 +1,5 @@
 # Define backup destination
-$BackupLocation = "D:\FileBackup" # Change this to your preferred backup location
+$BackupLocation = "D:\AutoBackups\FileBackup" # Change this to your preferred backup location
 
 # Define paths to back up using $env:USERPROFILE (makes script portable)
 $PathsToBackup = @(
@@ -15,6 +15,11 @@ $PathsToBackup = @(
 Write-Host "Starting restore process..."
 
 foreach ($Path in $PathsToBackup) {
+    if (Test-Path $Path) {
+        Write-Host "Ensuring files are available offline in: $Path"
+        attrib -P -S "$Path" -R /S /D
+    }
+
     $BackupTarget = $Path -replace [regex]::Escape($env:USERPROFILE), "$BackupLocation"
     
     if (Test-Path $BackupTarget) {

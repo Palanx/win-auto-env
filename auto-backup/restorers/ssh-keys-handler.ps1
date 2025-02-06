@@ -1,6 +1,6 @@
 # Define paths
 $SSHPath = "$env:USERPROFILE\.ssh"
-$BackupPath = "D:\SSHBackup"  # Change this to your preferred backup location
+$BackupPath = "D:\AutoBackups\SSHBackup"  # Change this to your preferred backup location
 
 if (Test-Path $BackupPath) {
     Write-Host "Restoring SSH keys..."
@@ -16,8 +16,24 @@ if (Test-Path $BackupPath) {
     Start-Service ssh-agent
     Write-Host "OpenSSH Authentication Agent started."
 
-    # Add private keys to SSH agent
-    $PrivateKeys = Get-ChildItem -Path $SSHPath -Filter "*.pem","id_rsa","id_ecdsa","id_ed25519" -File
+    # Identify potential private keys
+    $PubKeys = Get-ChildItem -Path $SSHPath -Filter "*.pub" -File
+    $PrivateKeys = @()
+
+    foreach ($PubKey in $PubKeys) {
+        # Check for corresponding private key (same name without .pub extension)
+        $PrivateKeyPath = $PubKey.FullName -replace "\.pub$", ""
+
+        if (Test-Path $PrivateKeyPath) {
+            $PrivateKeys += Get-Item $PrivateKeyPath
+        }
+    }
+
+    # Include standard private key files as well
+    $StandardKeys = Get-ChildItem -Path $SSHPath -File | Where-Object {
+        $_.Name -in @("id_rsa", "id_ecdsa", "id_ed25519") -or $_.Extension -eq ".pem"
+    }
+    $PrivateKeys += $StandardKeys | Where-Object { -not ($PrivateKeys -contains $_) }  # Avoid duplicates
 
     if ($PrivateKeys.Count -gt 0) {
         Write-Host "Adding SSH keys to OpenSSH Authentication Agent..."

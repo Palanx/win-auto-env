@@ -1,8 +1,11 @@
 # Define backup file location
-$BackupFile = "D:\EnvBackup.txt" # Change this to your preferred backup locatio
+$BackupFile = "D:\AutoBackups\EnvBackup.txt" # Change this to your preferred backup locatio
 
 # List of specific environment variables to backup
 $EnvVars = @("GIT_SSH")
+
+# Clear the backup file.
+Clear-Content -Path $BackupFile -ErrorAction SilentlyContinue
 
 Write-Host "Backing up specified environment variables..."
 

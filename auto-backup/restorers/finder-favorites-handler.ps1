@@ -1,5 +1,5 @@
 # Define backup location
-$BackupPath = "D:\ExplorerFavoritesBackup"  # Change this to your preferred backup location
+$BackupPath = "D:\AutoBackups\ExplorerFavoritesBackup"  # Change this to your preferred backup location
 $QuickAccessPath1 = "$env:APPDATA\Microsoft\Windows\Recent\AutomaticDestinations"
 $QuickAccessPath2 = "$env:APPDATA\Microsoft\Windows\Recent\CustomDestinations"
 $RegistryBackup = "$BackupPath\QuickAccessRegistry.reg"
@@ -22,9 +22,6 @@ if (Test-Path $RegistryBackup) {
     Write-Host "No Registry backup found!"
 }
 
-# Restart File Explorer to apply changes
-Write-Host "Restarting Explorer..."
-Stop-Process -Name explorer -Force
-Start-Process explorer
+# TODO: Required restart explorer
 
 Write-Host "Restore completed successfully!"

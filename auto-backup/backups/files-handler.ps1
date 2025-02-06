@@ -1,5 +1,5 @@
 # Define backup destination
-$BackupLocation = "D:\FileBackup" # Change this to your preferred backup locatio
+$BackupLocation = "D:\AutoBackups\FileBackup" # Change this to your preferred backup locatio
 
 # Define paths to back up using $env:USERPROFILE (makes script portable)
 $PathsToBackup = @(
