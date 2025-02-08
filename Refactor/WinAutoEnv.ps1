@@ -29,6 +29,7 @@ function Start-BackupSystem
         # Import module.
         Import-Module "$ScriptDir\Modules\BackupSystem\Backup-System.psm1"
 
+        Write-Host "Starting BackupSystem"
         # TODO: Init the Backup System Process.
     }
     catch
@@ -47,18 +48,19 @@ function Start-RestoreSystem
     try
     {
         # Import module.
-        Import-Module "$ScriptDir\Modules\RecoverSystem\Recover-System.psm1"
+        Import-Module "$ScriptDir\Modules\RestoreSystem\Restore-System.psm1"
 
+        Write-Host "Starting RestoreSystem"
         # TODO: Init the Restore System Process.
     }
     catch
     {
-        Write-Host "$UTFCrossMark Error starting Recover-System: $_" -ForegroundColor Red
+        Write-Host "$UTFCrossMark Error starting Restore-System: $_" -ForegroundColor Red
     }
     finally
     {
         # Remove the module.
-        Remove-Module Recover-System -ErrorAction SilentlyContinue
+        Remove-Module Restore-System -ErrorAction SilentlyContinue
     }
 }
 
@@ -69,6 +71,7 @@ function Start-AppInstall
         # Import module.
         Import-Module "$ScriptDir\Modules\AppInstall\App-Install.psm1"
 
+        Write-Host "Starting AppInstall"
         # TODO: Init the App Install Process.
     }
     catch
@@ -89,10 +92,9 @@ function Start-AppInstall
 $mustExit = $false
 do
 {
-    Clear-Host
     Write-Header -Title "Win Auto Environment"
 
-    $selectedIndex =Write-SelectionList -Options $Options
+    $selectedIndex = Write-SelectionList -Options $Options
     switch ($Options[$selectedIndex])
     {
         $BuckupSystemOption { Start-BackupSystem }
