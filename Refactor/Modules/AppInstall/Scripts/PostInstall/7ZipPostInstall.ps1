@@ -32,11 +32,12 @@ try {
 
     # Track failed 7-Zip associations.
     $FailedAssociations = @()
-    
+
     # Assign file types to 7-Zip.
     Write-Host "Setting file associations..." -ForegroundColor Yellow
     foreach ($ext in $extensions) {
-        $process = Start-Process -FilePath $SetUserFTA -ArgumentList "$ext 7zFM.exe" -Wait -NoNewWindow
+        $process = Start-Process -FilePath $SetUserFTA -ArgumentList "$ext 7zFM.exe" -NoNewWindow -PassThru
+        $process.WaitForExit()
 
         # Check the last exit code.
         if ($process.ExitCode -eq 0) {
@@ -49,7 +50,7 @@ try {
 
     Restart-Explorer
 
-    if ($FailedAssociations.Count > 0)
+    if ($FailedAssociations.Count -gt 0)
     {
         throw "Some extension associations failed: $( $FailedAssociations -join ', ' )"
     }

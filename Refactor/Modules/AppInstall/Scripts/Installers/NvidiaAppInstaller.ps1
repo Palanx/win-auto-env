@@ -30,7 +30,8 @@ try {
 
     # Install the app
     Write-Host "Installing NVIDIA App..." -ForegroundColor Yellow
-    $process = Start-Process -FilePath $NVIDIAAppInstallerPath -ArgumentList "/s /noreboot" -NoNewWindow -Wait
+    $process = Start-Process -FilePath $NVIDIAAppInstallerPath -ArgumentList "/s /noreboot" -NoNewWindow -PassThru
+    $process.WaitForExit()
 
     # Check the last exit code
     if ($process.Exitcode -eq 0) {

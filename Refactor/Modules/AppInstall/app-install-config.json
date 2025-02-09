@@ -1,12 +1,14 @@
 {
   "winget-packages": [
     {
+      "enabled": true,
       "category": "dev",
       "package-id": "Fork.Fork",
       "package-alias": "Fork",
       "silent": true
     },
     {
+      "enabled": true,
       "category": "dev",
       "package-id": "Git.Git",
       "package-alias": "Git",
@@ -14,12 +16,14 @@
       "package-extra-parameters": "/VERYSILENT /NORESTART /COMPONENTS=\"git,assoc,assoc_sh,curl,git_lfs,credential_manager\" /TASKS=\"!desktopicon,assoc,assoc_sh\" /EDITOR=\"VisualStudioCode\" /SSH=OpenSSH /CURL=OpenSSL /BASHSHELL=MinTTY /GITPULLBEHAVIOR=Merge /PERFORMANCE=FSCache /CREDENTIALMANAGER=Enabled /SYMLINKS=Disabled /FSMONITOR=Disabled /CRLF=Input"
     },
     {
+      "enabled": true,
       "category": "dev",
       "package-id": "GitHub.GitLFS",
       "package-alias": "Git LFS",
       "silent": true
     },
     {
+      "enabled": true,
       "category": "dev",
       "package-id": "GoLang.Go",
       "package-alias": "Go",
@@ -29,6 +33,7 @@
       "post-install-script-requires-admin": false
     },
     {
+      "enabled": true,
       "category": "dev",
       "package-id": "JetBrains.Toolbox",
       "package-alias": "JetBrain Toolbox",
@@ -37,48 +42,56 @@
       "post-install-script-requires-admin": false
     },
     {
+      "enabled": true,
       "category": "dev",
       "package-id": "OpenJS.NodeJS.LTS",
       "package-alias": "Node",
       "silent": true
     },
     {
+      "enabled": true,
       "category": "dev",
       "package-id": "Postman.Postman",
       "package-alias": "Postman",
       "silent": true
     },
     {
+      "enabled": true,
       "category": "dev",
       "package-id": "Microsoft.PowerShell",
       "package-alias": "PowerShell",
       "silent": true
     },
     {
+      "enabled": true,
       "category": "dev",
       "package-id": "Microsoft.VisualStudioCode",
       "package-alias": "Visual Studio Code",
       "silent": true
     },
     {
+      "enabled": true,
       "category": "dev",
       "package-id": "Microsoft.WindowsSDK.10.0.26100",
       "package-alias": "Windows Software Developer Kit v10.0.26100",
       "silent": true
     },
     {
+      "enabled": true,
       "category": "dev",
       "package-id": "Microsoft.WindowsWDK.10.0.26100",
       "package-alias": "Windows Driver Kit v10.0.26100",
       "silent": true
     },
     {
+      "enabled": true,
       "category": "dev",
       "package-id": "Microsoft.WindowsTerminal",
       "package-alias": "Windows Terminal",
       "silent": true
     },
     {
+      "enabled": true,
       "category": "os",
       "package-id": "7zip.7zip",
       "package-alias": "7Zip",
@@ -87,12 +100,14 @@
       "post-install-script-requires-admin": false
     },
     {
+      "enabled": true,
       "category": "os",
       "package-id": "Microsoft.DirectX",
       "package-alias": "DirectX",
       "silent": true
     },
     {
+      "enabled": true,
       "category": "os",
       "package-id": "Skillbrains.Lightshot",
       "package-alias": "Lightshot",
@@ -101,36 +116,42 @@
       "post-install-script-requires-admin": false
     },
     {
+      "enabled": true,
       "category": "os",
       "package-id": "Logitech.GHUB",
       "package-alias": "LogitechGHUB",
       "silent": true
     },
     {
+      "enabled": true,
       "category": "os",
       "package-id": "mpv.net",
       "package-alias": "MPV",
       "silent": true
     },
     {
+      "enabled": true,
       "category": "os",
       "package-id": "Microsoft.PowerToys",
       "package-alias": "Power Toys",
       "silent": true
     },
     {
+      "enabled": true,
       "category": "personal",
       "package-id": "Google.Chrome",
       "package-alias": "Chrome",
       "silent": true
     },
     {
+      "enabled": true,
       "category": "personal",
       "package-id": "Discord.Discord",
       "package-alias": "Discord",
       "silent": true
     },
     {
+      "enabled": true,
       "category": "personal",
       "package-id": "EpicGames.EpicGamesLauncher",
       "package-alias": "Epic",
@@ -138,6 +159,7 @@
       "location": "G:/Program Files (x86)/Epic Games"
     },
     {
+      "enabled": true,
       "category": "personal",
       "package-id": "GOG.Galaxy",
       "package-alias": "GoG",
@@ -145,30 +167,35 @@
       "location": "G:/Program Files (x86)/GOG Galaxy"
     },
     {
+      "enabled": true,
       "category": "personal",
       "package-id": "Apple.iCloud",
       "package-alias": "iCloud",
       "silent": false
     },
     {
+      "enabled": true,
       "category": "personal",
       "package-id": "Obsidian.Obsidian",
       "package-alias": "Obsidian",
       "silent": true
     },
     {
+      "enabled": true,
       "category": "personal",
       "package-id": "qBittorrent.qBittorrent",
       "package-alias": "qBittorrent",
       "silent": true
     },
     {
+      "enabled": true,
       "category": "personal",
       "package-id": "Spotify.Spotify",
       "package-alias": "Spotify",
       "silent": true
     },
     {
+      "enabled": true,
       "category": "personal",
       "package-id": "Valve.Steam",
       "package-alias": "Steam",
@@ -176,12 +203,14 @@
       "location": "G:/Program Files/Steam"
     },
     {
+      "enabled": true,
       "category": "personal",
       "package-id": "Telegram.TelegramDesktop",
       "package-alias": "Telegram",
       "silent": true
     },
     {
+      "enabled": true,
       "category": "personal",
       "package-id": "9NKSQGP7F2NH",
       "package-alias": "WhatsApp",
@@ -190,6 +219,7 @@
   ],
   "win-store-installers": [
     {
+      "enabled": true,
       "category": "personal",
       "app-id": "9NBLGGH5R558",
       "app-alias": "Windows to Do"
@@ -197,6 +227,7 @@
   ],
   "standalone-installers": [
     {
+      "enabled": true,
       "category": "dev",
       "requires-admin": false,
       "app-alias": "UnityHub",
@@ -204,6 +235,7 @@
       "installation-path": "D:/Program Files/Unity Hub/Unity Hub.exe"
     },
     {
+      "enabled": true,
       "category": "os",
       "requires-admin": false,
       "app-alias": "Nvidia App",

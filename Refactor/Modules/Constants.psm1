@@ -2,11 +2,11 @@
 $ScriptDir = Split-Path -Parent -Path $MyInvocation.MyCommand.Path
 
 # Define Global variables.
-$Global:BACKUP_LOG_PATH = "$ScriptDir\..\Logs\backup_log.txt"
-$Global:RESTORE_LOG_PATH = "$ScriptDir\..\Logs\restore_log.txt"
-$Global:APPINSTALL_LOG_PATH = "$ScriptDir\..\Logs\app_install_log.txt"
-$Global:STATUS_SUCCESS = 0
-$Global:STATUS_FAILURE = 1
+[string]$Global:BACKUP_LOG_PATH = "$ScriptDir\..\Logs\backup_log.txt"
+[string]$Global:RESTORE_LOG_PATH = "$ScriptDir\..\Logs\restore_log.txt"
+[string]$Global:APPINSTALL_LOG_PATH = "$ScriptDir\..\Logs\app_install_log.txt"
+[int]$Global:STATUS_SUCCESS = 0
+[int]$Global:STATUS_FAILURE = 1
 
 # Define the UTF characters and styles inside a hashtable.
 $UTF = @{

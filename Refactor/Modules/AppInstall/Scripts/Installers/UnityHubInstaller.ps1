@@ -34,7 +34,8 @@ try {
             }
         }
         Write-Host "Installing UnityHub..." -ForegroundColor Yellow
-        $process = Start-Process -FilePath $UnityHubInstaller -ArgumentList "/S /D=`"$InstallationPath`"" -Wait
+        $process = Start-Process -FilePath $UnityHubInstaller -ArgumentList "/S /D=`"$InstallationPath`"" -PassThru
+        $process.WaitForExit()
 
         # Check the last exit code
         if ($process.ExitCode -ne 0) {
