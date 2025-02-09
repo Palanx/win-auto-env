@@ -15,151 +15,84 @@ $ConfigPath = "$ScriptDir\app-install-config.json"
 # Read JSON file and convert to PowerShell object.
 $ConfigData = Get-Content -Path $ConfigPath -Raw | ConvertFrom-Json
 
+# Define installation categories.
+$installCategories = @("dev", "os", "personal")
+
+# Define installer types.
+$WingetPackagesType = "WingetPackages"
+$WinStoreInstallersType = "WinStoreInstallers"
+$StandaloneInstallersType = "StandaloneInstallers"
+$InstallationTypes = @($WingetPackagesType, $WinStoreInstallersType, $StandaloneInstallersType)
+
+# Initialize categorized configurations.
+$categorizedConfigs = @{}
+foreach ($category in $installCategories) {
+    $categorizedConfigs[$category] = @{
+        $WingetPackagesType       = @()
+        $WinStoreInstallersType   = @()
+        $InstallationTypes = @()
+    }
+}
+
+# Function to categorize the configuration items.
+function Categorize-Installers {
+    param (
+        [string]$InstallerType,
+        [array]$Installers
+    )
+
+    if ($null -ne $Installers) {
+        foreach ($installer in $Installers) {
+            if (!$installer.enabled) { continue }
+            $category = $installer.category
+            if ($installCategories -contains $category) {
+                $categorizedConfigs[$category][$InstallerType].Add($installer)
+            }
+        }
+    }
+}
+
+# Categorize all installers.
+Categorize-Installers -installerType $WingetPackagesType -installers $ConfigData.'winget-packages'
+Categorize-Installers -installerType $WinStoreInstallersType -installers $ConfigData.'win-store-installers'
+Categorize-Installers -installerType $StandaloneInstallersType -installers $ConfigData.'standalone-installers'
+
 # Start the App Install process.
-function Start-AppInstall
-{
-    $devConfigs = @{
-        "WingetPackages" = @()
-        "WinStoreInstallers" = @()
-        "StandaloneInstallers" = @()
-    }
+function Start-AppInstall {
+    foreach ($category in $installCategories) {
+        Write-Host "Starting '$category' Apps installation..."
 
-    $osConfigs = @{
-        "WingetPackages" = @()
-        "WinStoreInstallers" = @()
-        "StandaloneInstallers" = @()
-    }
+        $failedInstallations = 0
+        foreach ($installerType in $InstallationTypes) {
+            $installers = $categorizedConfigs[$category][$installerType]
 
-    $personalConfigs = @{
-        "WingetPackages" = @()
-        "WinStoreInstallers" = @()
-        "StandaloneInstallers" = @()
-    }
+            if ($installers.Count -gt 0) {
+                Write-Host "There are $($installers.Count) $category Apps to install via $installerType."
 
-    if ($null -ne $ConfigData.'winget-packages')
-    {
-        foreach ($wingetPackage in $ConfigData.'winget-packages')
-        {
-            if (!$wingetPackage.enabled)
-            {
-                continue
-            }
-
-            switch ($wingetPackage.category)
-            {
-                "dev"
-                {
-                    $devConfigs["WingetPackages"].Add($wingetPackage)
-                }
-                "os"
-                {
-                    $osConfigs["WingetPackages"].Add($wingetPackage)
-                }
-                "personal"
-                {
-                    $personalConfigs["WingetPackages"].Add($wingetPackage)
+                foreach ($config in $installers) {
+                    $installFunction = Get-Command -Name "Start-$installerType" -ErrorAction SilentlyContinue
+                    if ($null -ne $installFunction) {
+                        try
+                        {
+                            $exitCode = & $installFunction -Config $config -ErrorAction Stop
+                            if ($exitCode -ne $Global:STATUS_SUCCESS) {
+                                $failedInstallations++
+                            }
+                        }
+                        catch
+                        {
+                            $failedInstallations++
+                        }
+                    }
                 }
             }
         }
-    }
 
-    if ($null -ne $ConfigData.'win-store-installers')
-    {
-        foreach ($winStoreInstaller in $ConfigData.'win-store-installers')
-        {
-            if (!$winStoreInstaller.enabled)
-            {
-                continue
-            }
-
-            switch ($winStoreInstaller.category)
-            {
-                "dev"
-                {
-                    $devConfigs["WinStoreInstallers"].Add($winStoreInstaller)
-                }
-                "os"
-                {
-                    $osConfigs["WinStoreInstallers"].Add($winStoreInstaller)
-                }
-                "personal"
-                {
-                    $personalConfigs["WinStoreInstallers"].Add($winStoreInstaller)
-                }
-            }
+        if ($failedInstallations -gt 0) {
+            Write-Host "$($UTF.WarningSign) WARNING: $failedInstallations installations failed in the category '$category'." -ForegroundColor Red
+        } else {
+            Write-Host "$($UTF.HeavyCheckMark) All apps in category '$category' installed successfully!" -ForegroundColor Green
         }
-    }
-
-    if ($null -ne $ConfigData.'standalone-installers')
-    {
-        foreach ($standaloneInstaller in $ConfigData.'standalone-installers')
-        {
-            if (!$standaloneInstaller.enabled)
-            {
-                continue
-            }
-
-            switch ($standaloneInstaller.category)
-            {
-                "dev"
-                {
-                    $devConfigs["StandaloneInstallers"].Add($standaloneInstaller)
-                }
-                "os"
-                {
-                    $osConfigs["StandaloneInstallers"].Add($standaloneInstaller)
-                }
-                "personal"
-                {
-                    $personalConfigs["StandaloneInstallers"].Add($standaloneInstaller)
-                }
-            }
-        }
-    }
-
-    Write-Host "Starting Dev Apps installation..."
-    foreach ($devWingetPackageConfig in $devConfigs["WingetPackages"])
-    {
-        Start-WingetInstallation -Config $devWingetPackageConfig
-    }
-    foreach ($devWinStoreInstallerConfig in $devConfigs["WinStoreInstallers"])
-    {
-        Start-WinStoreInstallation -Config $devWinStoreInstallerConfig
-    }
-    foreach ($devStandaloneInstallerConfig in $devConfigs["StandaloneInstallers"])
-    {
-        Start-StandaloneInstallation -Config $devStandaloneInstallerConfig
-    }
-
-    Write-Host "Starting OS Apps installation..."
-    foreach ($osWingetPackageConfig in $osConfigs["WingetPackages"])
-    {
-        Start-WingetInstallation -Config $osWingetPackageConfig
-    }
-    foreach ($osWinStoreInstallerConfig in $osConfigs["WinStoreInstallers"])
-    {
-        Start-WinStoreInstallation -Config $osWinStoreInstallerConfig
-    }
-    foreach ($osStandaloneInstallerConfig in $osConfigs["StandaloneInstallers"])
-    {
-        Start-StandaloneInstallation -Config $osStandaloneInstallerConfig
-    }
-
-    Write-Host "Starting Personal Apps installation..."
-    Write-Host "There are $($personalConfigs["WingetPackages"].Count) Personal Apps to install by winget."
-    foreach ($personalWingetPackageConfig in $personalConfigs["WingetPackages"])
-    {
-        Start-WingetInstallation -Config $personalWingetPackageConfig
-    }
-    Write-Host "There are $($personalConfigs["WinStoreInstallers"].Count) Personal Apps to install by windows store."
-    foreach ($personalWinStoreInstallerConfig in $personalConfigs["WinStoreInstallers"])
-    {
-        Start-WinStoreInstallation -Config $personalWinStoreInstallerConfig
-    }
-    Write-Host "There are $($personalConfigs["StandaloneInstallers"].Count) Personal Apps to install by standalone installer."
-    foreach ($personalStandaloneInstallerConfig in $personalConfigs["StandaloneInstallers"])
-    {
-        Start-StandaloneInstallation -Config $personalStandaloneInstallerConfig
     }
 }
 
