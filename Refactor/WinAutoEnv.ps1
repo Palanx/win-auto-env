@@ -5,11 +5,17 @@ $ScriptDir = Split-Path -Parent -Path $MyInvocation.MyCommand.Path
 Remove-Module Constants -ErrorAction SilentlyContinue
 Remove-Module Core -ErrorAction SilentlyContinue
 Remove-Module Gui -ErrorAction SilentlyContinue
+Remove-Module Backup-System -ErrorAction SilentlyContinue
+Remove-Module Restore-System -ErrorAction SilentlyContinue
+Remove-Module App-Install -ErrorAction SilentlyContinue
 
 # Import modules.
 Import-Module "$ScriptDir\Modules\Constants.psm1"
 Import-Module "$ScriptDir\Modules\Core.psm1"
 Import-Module "$ScriptDir\Modules\Gui.psm1"
+Import-Module "$ScriptDir\Modules\BackupSystem\Backup-System.psm1"
+Import-Module "$ScriptDir\Modules\RestoreSystem\Restore-System.psm1"
+Import-Module "$ScriptDir\Modules\AppInstall\App-Install.psm1"
 
 # Define Options and their Handlers.
 $BuckupSystemOption = "Backup System"
@@ -18,77 +24,7 @@ $AppInstallOption = "AppInstall"
 $ExitOption = "Exit"
 $Options = @($BuckupSystemOption, $RestoreSystemOption, $AppInstallOption, $ExitOption)
 
-# ------------------------------------------------------------------------------------------------------------- #
-# Functions                                                                                                     #
-# ------------------------------------------------------------------------------------------------------------- #
-
-function Start-BackupSystem
-{
-    try
-    {
-        # Import module.
-        Import-Module "$ScriptDir\Modules\BackupSystem\Backup-System.psm1"
-
-        Write-Host "Starting BackupSystem"
-        # TODO: Init the Backup System Process.
-    }
-    catch
-    {
-        Write-Host "$UTFCrossMark Error starting Backup-System: $_" -ForegroundColor Red
-    }
-    finally
-    {
-        # Remove the module.
-        Remove-Module Backup-System -ErrorAction SilentlyContinue
-    }
-}
-
-function Start-RestoreSystem
-{
-    try
-    {
-        # Import module.
-        Import-Module "$ScriptDir\Modules\RestoreSystem\Restore-System.psm1"
-
-        Write-Host "Starting RestoreSystem"
-        # TODO: Init the Restore System Process.
-    }
-    catch
-    {
-        Write-Host "$UTFCrossMark Error starting Restore-System: $_" -ForegroundColor Red
-    }
-    finally
-    {
-        # Remove the module.
-        Remove-Module Restore-System -ErrorAction SilentlyContinue
-    }
-}
-
-function Start-AppInstall
-{
-    try
-    {
-        # Import module.
-        Import-Module "$ScriptDir\Modules\AppInstall\App-Install.psm1"
-
-        Write-Host "Starting AppInstall"
-        # TODO: Init the App Install Process.
-    }
-    catch
-    {
-        Write-Host "$UTFCrossMark Error starting App-Install: $_" -ForegroundColor Red
-    }
-    finally
-    {
-        # Remove the module.
-        Remove-Module App-Install -ErrorAction SilentlyContinue
-    }
-}
-
-# ------------------------------------------------------------------------------------------------------------- #
-# Main Loop                                                                                                     #
-# ------------------------------------------------------------------------------------------------------------- #
-
+# Main loop.
 $mustExit = $false
 do
 {

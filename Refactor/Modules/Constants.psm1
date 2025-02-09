@@ -11,7 +11,8 @@ $Global:STATUS_FAILURE = 1
 # Define the UTF characters and styles inside a hashtable.
 $UTF = @{
 # Emogis
-    CheckMark       = [char]::ConvertFromUtf32(0x00002705)
+    HeavyCheckMark  = [char]::ConvertFromUtf32(0x00002705)
+    CheckMark       = [char]::ConvertFromUtf32(0x00002714)
     CrossMark       = [char]::ConvertFromUtf32(0x0000274C)
     WarningSign     = [char]::ConvertFromUtf32(0x000026A0)
     HourGlass       = [char]::ConvertFromUtf32(0x0000231B)

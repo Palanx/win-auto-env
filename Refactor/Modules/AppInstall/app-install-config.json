@@ -1,0 +1,213 @@
+{
+  "winget-packages": [
+    {
+      "category": "dev",
+      "package-id": "Fork.Fork",
+      "package-alias": "Fork",
+      "silent": true
+    },
+    {
+      "category": "dev",
+      "package-id": "Git.Git",
+      "package-alias": "Git",
+      "silent": true,
+      "package-extra-parameters": "/VERYSILENT /NORESTART /COMPONENTS=\"git,assoc,assoc_sh,curl,git_lfs,credential_manager\" /TASKS=\"!desktopicon,assoc,assoc_sh\" /EDITOR=\"VisualStudioCode\" /SSH=OpenSSH /CURL=OpenSSL /BASHSHELL=MinTTY /GITPULLBEHAVIOR=Merge /PERFORMANCE=FSCache /CREDENTIALMANAGER=Enabled /SYMLINKS=Disabled /FSMONITOR=Disabled /CRLF=Input"
+    },
+    {
+      "category": "dev",
+      "package-id": "GitHub.GitLFS",
+      "package-alias": "Git LFS",
+      "silent": true
+    },
+    {
+      "category": "dev",
+      "package-id": "GoLang.Go",
+      "package-alias": "Go",
+      "silent": true,
+      "package-extra-parameters": "-v \"1.18.10\"",
+      "post-install-script-path": "/Scripts/PostInstall/GoPostInstall.ps1",
+      "post-install-script-requires-admin": false
+    },
+    {
+      "category": "dev",
+      "package-id": "JetBrains.Toolbox",
+      "package-alias": "JetBrain Toolbox",
+      "silent": true,
+      "post-install-script-path": "/Scripts/PostInstall/JetBrainsToolboxPostInstall.ps1",
+      "post-install-script-requires-admin": false
+    },
+    {
+      "category": "dev",
+      "package-id": "OpenJS.NodeJS.LTS",
+      "package-alias": "Node",
+      "silent": true
+    },
+    {
+      "category": "dev",
+      "package-id": "Postman.Postman",
+      "package-alias": "Postman",
+      "silent": true
+    },
+    {
+      "category": "dev",
+      "package-id": "Microsoft.PowerShell",
+      "package-alias": "PowerShell",
+      "silent": true
+    },
+    {
+      "category": "dev",
+      "package-id": "Microsoft.VisualStudioCode",
+      "package-alias": "Visual Studio Code",
+      "silent": true
+    },
+    {
+      "category": "dev",
+      "package-id": "Microsoft.WindowsSDK.10.0.26100",
+      "package-alias": "Windows Software Developer Kit v10.0.26100",
+      "silent": true
+    },
+    {
+      "category": "dev",
+      "package-id": "Microsoft.WindowsWDK.10.0.26100",
+      "package-alias": "Windows Driver Kit v10.0.26100",
+      "silent": true
+    },
+    {
+      "category": "dev",
+      "package-id": "Microsoft.WindowsTerminal",
+      "package-alias": "Windows Terminal",
+      "silent": true
+    },
+    {
+      "category": "os",
+      "package-id": "7zip.7zip",
+      "package-alias": "7Zip",
+      "silent": true,
+      "post-install-script-path": "/Scripts/PostInstall/7ZipPostInstall.ps1",
+      "post-install-script-requires-admin": false
+    },
+    {
+      "category": "os",
+      "package-id": "Microsoft.DirectX",
+      "package-alias": "DirectX",
+      "silent": true
+    },
+    {
+      "category": "os",
+      "package-id": "Skillbrains.Lightshot",
+      "package-alias": "Lightshot",
+      "silent": true,
+      "post-install-script-path": "/Scripts/PostInstall/LightshotPostInstall.ps1",
+      "post-install-script-requires-admin": false
+    },
+    {
+      "category": "os",
+      "package-id": "Logitech.GHUB",
+      "package-alias": "LogitechGHUB",
+      "silent": true
+    },
+    {
+      "category": "os",
+      "package-id": "mpv.net",
+      "package-alias": "MPV",
+      "silent": true
+    },
+    {
+      "category": "os",
+      "package-id": "Microsoft.PowerToys",
+      "package-alias": "Power Toys",
+      "silent": true
+    },
+    {
+      "category": "personal",
+      "package-id": "Google.Chrome",
+      "package-alias": "Chrome",
+      "silent": true
+    },
+    {
+      "category": "personal",
+      "package-id": "Discord.Discord",
+      "package-alias": "Discord",
+      "silent": true
+    },
+    {
+      "category": "personal",
+      "package-id": "EpicGames.EpicGamesLauncher",
+      "package-alias": "Epic",
+      "silent": true,
+      "location": "G:/Program Files (x86)/Epic Games"
+    },
+    {
+      "category": "personal",
+      "package-id": "GOG.Galaxy",
+      "package-alias": "GoG",
+      "silent": true,
+      "location": "G:/Program Files (x86)/GOG Galaxy"
+    },
+    {
+      "category": "personal",
+      "package-id": "Apple.iCloud",
+      "package-alias": "iCloud",
+      "silent": false
+    },
+    {
+      "category": "personal",
+      "package-id": "Obsidian.Obsidian",
+      "package-alias": "Obsidian",
+      "silent": true
+    },
+    {
+      "category": "personal",
+      "package-id": "qBittorrent.qBittorrent",
+      "package-alias": "qBittorrent",
+      "silent": true
+    },
+    {
+      "category": "personal",
+      "package-id": "Spotify.Spotify",
+      "package-alias": "Spotify",
+      "silent": true
+    },
+    {
+      "category": "personal",
+      "package-id": "Valve.Steam",
+      "package-alias": "Steam",
+      "silent": true,
+      "location": "G:/Program Files/Steam"
+    },
+    {
+      "category": "personal",
+      "package-id": "Telegram.TelegramDesktop",
+      "package-alias": "Telegram",
+      "silent": true
+    },
+    {
+      "category": "personal",
+      "package-id": "9NKSQGP7F2NH",
+      "package-alias": "WhatsApp",
+      "silent": true
+    }
+  ],
+  "win-store-installers": [
+    {
+      "category": "personal",
+      "app-id": "9NBLGGH5R558",
+      "app-alias": "Windows to Do"
+    }
+  ],
+  "standalone-installers": [
+    {
+      "category": "dev",
+      "requires-admin": false,
+      "app-alias": "UnityHub",
+      "script-path": "/Scripts/Installers/UnityHubInstaller.ps1",
+      "installation-path": "D:/Program Files/Unity Hub/Unity Hub.exe"
+    },
+    {
+      "category": "os",
+      "requires-admin": false,
+      "app-alias": "Nvidia App",
+      "script-path": "/Scripts/Installers/NvidiaAppInstaller.ps1"
+    }
+  ]
+}

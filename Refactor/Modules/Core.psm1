@@ -8,6 +8,25 @@ Import-Module "$ScriptDir\Constants.psm1"
 # Functions                                                                                                     #
 # ------------------------------------------------------------------------------------------------------------- #
 
+# Restart explorer service.
+function Restart-Explorer
+{
+    Write-Host "Restarting explorer service." -ForegroundColor Yellow
+    # Stop Explorer
+    Stop-Process -Name explorer -Force -ErrorAction SilentlyContinue
+
+    # Start Explorer and Wait for Initialization
+    Start-Process -FilePath explorer.exe
+
+    # Wait for Explorer to be fully initialized
+    do {
+        Start-Sleep -Milliseconds 500
+        $explorerRunning = Get-Process -Name explorer -ErrorAction SilentlyContinue
+    } while (-not $explorerRunning)
+
+    Write-Host "$($UTF.CheckMark)Explorer restarted successfully." -ForegroundColor Green
+}
+
 # Invoke a Scripts that are in a Path or multiple Paths.
 function Invoke-Scripts
 {
@@ -94,4 +113,4 @@ function Invoke-Scripts
 }
 
 # Export the functions.
-Export-ModuleMember -Function Invoke-Scripts
+Export-ModuleMember -Function Invoke-Scripts, Restart-Explorer
