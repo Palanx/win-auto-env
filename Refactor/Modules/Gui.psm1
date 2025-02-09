@@ -53,7 +53,7 @@ function Write-SelectionList
 
         for ($i = 0; $i -lt $Options.Length; $i++) {
             if ($i -eq $selectedIndex) {
-                Write-Host "> $($Options[$i])" -ForegroundColor $SelectedOptionsColor
+                Write-Host "$($UTF.JapaneseGoblin)$($Options[$i])" -ForegroundColor $SelectedOptionsColor
             } else {
                 Write-Host "  $($Options[$i])" -ForegroundColor $OptionsColor
             }
