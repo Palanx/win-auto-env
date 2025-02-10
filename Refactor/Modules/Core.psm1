@@ -51,7 +51,7 @@ function Invoke-ScriptWithCorrectPermissions
     # The script will run a new admin shell.
     if ($RequiresAdmin -and -not (Get-IsAdmin))
     {
-        return Invoke-Script -asAdmin $true -ScriptPath $ScriptPath -ExtraParameters $ExtraParameters
+        return Invoke-ScriptAs -asAdmin $true -ScriptPath $ScriptPath -ExtraParameters $ExtraParameters
     }
     # The script will run a new non-admin shell (simulates running in the same window).
     elseif (-not $RequiresAdmin -and (Get-IsAdmin))

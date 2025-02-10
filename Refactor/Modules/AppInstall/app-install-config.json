@@ -3,12 +3,6 @@
     {
       "enabled": true,
       "category": "dev",
-      "package-id": "Microsoft.Sysinternals.PsTools",
-      "package-alias": "PsTools",
-      "silent": true
-    },{
-      "enabled": true,
-      "category": "dev",
       "package-id": "Fork.Fork",
       "package-alias": "Fork",
       "silent": true
