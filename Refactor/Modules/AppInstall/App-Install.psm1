@@ -87,8 +87,14 @@ function Start-AppInstall {
                         }
                     }
                 }
+                Write-Host ""
             }
-            Write-Host ""
+            else
+            {
+                $infoString = "Nothing to install via $installerType."
+                Write-Host $infoString -ForegroundColor White
+                Write-Separator -Width $infoString.Length
+            }
         }
 
         if ($failedInstallations -gt 0) {
@@ -128,7 +134,7 @@ function Start-StandaloneInstallation
         }
 
         Write-Host "$($UTF.CrossMark) Error executing app '$appAlias' standalone installation script (Exit Code: $exitCode)" -ForegroundColor Red
-        return $Global:STATUS_FAILURE
+        return $exitCode
     } catch {
         Write-Host "$($UTF.CrossMark) Exception occurred in app '$appAlias' standalone installation script execution: $(Get-ExceptionDetails $_)" -ForegroundColor Red
         return $Global:STATUS_FAILURE

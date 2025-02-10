@@ -112,7 +112,7 @@ function Start-InstallWingetPackage {
         }
 
         Write-Host "$($UTF.CrossMark) Error installing '$PackageAlias' by winget (Exit Code: $($process.ExitCode))" -ForegroundColor Red
-        return $Global:STATUS_FAILURE
+        return $process.ExitCode
     } catch {
         Write-Host "$($UTF.CrossMark) Exception occurred in '$PackageAlias' winget installation: $(Get-ExceptionDetails $_)" -ForegroundColor Red
         return $Global:STATUS_FAILURE
@@ -143,7 +143,7 @@ function Start-InstallWinStorePackage {
         }
 
         Write-Host "$($UTF.CrossMark) Error installing windows store package '$PackageAlias' by winget (Exit Code: $($process.ExitCode))" -ForegroundColor Red
-        return $Global:STATUS_FAILURE
+        return $process.ExitCode
     } catch {
         Write-Host "$($UTF.CrossMark) Exception occurred in '$PackageAlias' windows store installation by winget: $(Get-ExceptionDetails $_)" -ForegroundColor Red
         return $Global:STATUS_FAILURE
@@ -170,7 +170,7 @@ function Start-PostInstallationScript
         }
 
         Write-Host "$($UTF.CrossMark) Error executing package '$PackageAlias' post install script (Exit Code: $exitCode)" -ForegroundColor Red
-        return $Global:STATUS_FAILURE
+        return $process.ExitCode
     } catch {
         Write-Host "$($UTF.CrossMark) Exception occurred in package '$PackageAlias' post install script execution: $(Get-ExceptionDetails $_)" -ForegroundColor Red
         return $Global:STATUS_FAILURE

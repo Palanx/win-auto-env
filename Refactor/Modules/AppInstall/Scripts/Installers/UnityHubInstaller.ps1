@@ -45,8 +45,8 @@ try {
             return $Global:STATUS_SUCCESS
         }
 
-        Write-Host "$($UTF.CrossMark) Error installing UnityHub (Exit Code: $process.ExitCode)" -ForegroundColor Red
-        return $Global:STATUS_FAILURE
+        Write-Host "$($UTF.CrossMark) Error installing UnityHub (Exit Code: $($process.ExitCode))" -ForegroundColor Red
+        return $process.ExitCode
     }
 } catch {
     Write-Host "$($UTF.CrossMark) Exception occurred installing Unity HUB: $(Get-ExceptionDetails $_)" -ForegroundColor Red

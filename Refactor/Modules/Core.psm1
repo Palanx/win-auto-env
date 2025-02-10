@@ -51,12 +51,12 @@ function Invoke-ScriptWithCorrectPermissions
     # The script will run a new admin shell.
     if ($RequiresAdmin -and -not (Get-IsAdmin))
     {
-        return Invoke-ScriptAsAdmin -ScriptPath $ScriptPath -ExtraParameters $ExtraParameters
+        return Invoke-Script -asAdmin $true -ScriptPath $ScriptPath -ExtraParameters $ExtraParameters
     }
     # The script will run a new non-admin shell (simulates running in the same window).
     elseif (-not $RequiresAdmin -and (Get-IsAdmin))
     {
-        return Invoke-ScriptAsUser -ScriptPath $ScriptPath -ExtraParameters $ExtraParameters
+        return Invoke-ScriptAs -asAdmin $false -ScriptPath $ScriptPath -ExtraParameters $ExtraParameters
     }
     # The script is running with correct permissions.
     else
@@ -65,86 +65,55 @@ function Invoke-ScriptWithCorrectPermissions
     }
 }
 
-# Run a script as admin.
-function Invoke-ScriptAsAdmin {
+# Run a script as Admin or User.
+function Invoke-ScriptAs {
     param (
+        [bool]$asAdmin,
         [string]$ScriptPath,
         [hashtable]$ExtraParameters = @{}
     )
 
-    Write-Host "Executing script as Admin in new shell..." -ForegroundColor DarkMagenta
+    # Define the role text.
+    if ($asAdmin) {$role = "Admin" } else {$role = "User" }
+
+    Write-Host "Executing script as $role in new shell..." -ForegroundColor DarkMagenta
 
     # Create a temporary file to store the exit code.
     $tempFile = [System.IO.Path]::GetTempFileName()
 
     # Convert hashtable to a formatted string for PowerShell.
-    $extraParamsString = ($ExtraParameters.GetEnumerator() | ForEach-Object { "-$($_.Key) `"$($_.Value)`"" }) -join " "
+    $extraParamsString = ($ExtraParameters.GetEnumerator() | ForEach-Object { "-$($_.Key) '$($_.Value)'" }) -join " "
 
-    # Build the PowerShell command to execute and return the exit code in a Admin shell.
+    # Build the PowerShell command to execute and return the exit code in a shell.
     $command = @"
 `$exitCode = & `"$ScriptPath`" $extraParamsString -ExecutionPolicy Bypass -ErrorAction Stop;
 `$exitCode | Out-File -FilePath `"$tempFile`" -NoNewline;
-Write-Host "Script completed, Press Enter to exit..."
+Write-Host "Script completed as $role, Press Enter to exit..."
 Read-Host
 "@
 
-    # Run the admin shell and execute the command.
-    $process = Start-Process PowerShell -ArgumentList "-NoProfile -ExecutionPolicy Bypass -Command `"$command`"" -Verb RunAs -PassThru -Wait
+    # Run the shell and execute the command.
+    if ($asAdmin)
+    {
+        $process = Start-Process PowerShell -ArgumentList "-NoProfile -ExecutionPolicy Bypass -Command `"$command`"" -Verb RunAs -PassThru -Wait
+    }
+    else
+    {
+        $process = Start-Process PowerShell -ArgumentList "-NoProfile -ExecutionPolicy Bypass -Command `"$command`"" -PassThru -Wait
+    }
     $process.WaitForExit()
 
     # Get the exit code stored in the temp file.
     $exitCode = Get-Content $tempFile -Raw
     # Fallback in cases where exit code isn't returned because of an exception.
-    if ($exitCode -isnot [int]){
+    if (!([int]::TryParse($exitCode, [ref]$null))){
         $exitCode = $Global:STATUS_FAILURE
     }
 
     # Remove the temp file used to store the exit code.
     Remove-Item $tempFile -Force
 
-    Write-Host "Closed Admin shell. Exit Code: $exitCode" -ForegroundColor DarkMagenta
-
-    return $exitCode
-}
-
-# Run a script as user.
-function Invoke-ScriptAsUser {
-    param (
-        [string]$ScriptPath,
-        [hashtable]$ExtraParameters = @{}
-    )
-
-    Write-Host "Executing script as User in new shell..." -ForegroundColor DarkMagenta
-
-    # Create a temporary file to store the exit code.
-    $tempFile = [System.IO.Path]::GetTempFileName()
-
-    # Convert hashtable to a formatted string for PowerShell.
-    $extraParamsString = ($ExtraParameters.GetEnumerator() | ForEach-Object { "-$($_.Key) `'$($_.Value)`'" }) -join " "
-
-    # Build the PowerShell command to execute and return the exit code in a Admin shell.
-    $command = @"
-`$exitCode = & `"$ScriptPath`" $extraParamsString -ExecutionPolicy Bypass -ErrorAction Stop;
-`$exitCode | Out-File -FilePath `"$tempFile`" -NoNewline;
-Write-Host "Script completed, Press Enter to exit..."
-Read-Host
-"@
-
-    # Run the admin shell and execute the command.
-    $process = Start-Process PowerShell -ArgumentList "-NoProfile -ExecutionPolicy Bypass -Command `"$command`"" -PassThru -Wait
-    $process.WaitForExit()
-
-    # Get the exit code stored in the temp file.
-    $exitCode = Get-Content $tempFile -Raw
-    # Fallback in cases where exit code isn't returned because of an exception.
-    if ($exitCode -isnot [int]){
-        $exitCode = $Global:STATUS_FAILURE
-    }
-
-    # Remove the temp file used to store the exit code.
-    Remove-Item $tempFile -Force
-
-    Write-Host "Closed User shell. Exit Code: $exitCode" -ForegroundColor DarkMagenta
+    Write-Host "Closed $role shell. Exit Code: $exitCode" -ForegroundColor DarkMagenta
 
     return $exitCode
 }
