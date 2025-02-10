@@ -72,23 +72,37 @@ function Invoke-ScriptAsAdmin {
         [hashtable]$ExtraParameters = @{}
     )
 
-    Write-Host "Executing script as Admin using PsExec..." -ForegroundColor DarkMagenta
+    Write-Host "Executing script as Admin in new shell..." -ForegroundColor DarkMagenta
 
-    # Validate if PsExec is available in PATH
-    if (-Not (Get-Command psexec -ErrorAction SilentlyContinue)) {
-        Write-Host "❌ PsExec not found in PATH. Please install it or add it to your environment variables." -ForegroundColor Red
-        exit 1
-    }
+    # Create a temporary file to store the exit code.
+    $tempFile = [System.IO.Path]::GetTempFileName()
 
     # Convert hashtable to a formatted string for PowerShell.
-    $extraParamsString = ($ExtraParameters.GetEnumerator() | ForEach-Object { "$($_.Key) `"$($_.Value)`"" }) -join " "
+    $extraParamsString = ($ExtraParameters.GetEnumerator() | ForEach-Object { "-$($_.Key) `"$($_.Value)`"" }) -join " "
 
-    # Run the script using PsExec with SYSTEM privileges
-    $process = Start-Process psexec -ArgumentList "-accepteula -s powershell.exe -NoProfile -ExecutionPolicy Bypass -File `"$ScriptPath`" $extraParamsString" -PassThru
+    # Build the PowerShell command to execute and return the exit code in a Admin shell.
+    $command = @"
+`$exitCode = & `"$ScriptPath`" $extraParamsString -ExecutionPolicy Bypass -ErrorAction Stop;
+`$exitCode | Out-File -FilePath `"$tempFile`" -NoNewline;
+Write-Host "Script completed, Press Enter to exit..."
+Read-Host
+"@
+
+    # Run the admin shell and execute the command.
+    $process = Start-Process PowerShell -ArgumentList "-NoProfile -ExecutionPolicy Bypass -Command `"$command`"" -Verb RunAs -PassThru -Wait
     $process.WaitForExit()
-    $exitCode = $process.ExitCode
 
-    Write-Host "Closed Admin Shell via PsExec. Exit Code: $exitCode" -ForegroundColor DarkMagenta
+    # Get the exit code stored in the temp file.
+    $exitCode = Get-Content $tempFile -Raw
+    # Fallback in cases where exit code isn't returned because of an exception.
+    if ($exitCode -isnot [int]){
+        $exitCode = $Global:STATUS_FAILURE
+    }
+
+    # Remove the temp file used to store the exit code.
+    Remove-Item $tempFile -Force
+
+    Write-Host "Closed Admin shell. Exit Code: $exitCode" -ForegroundColor DarkMagenta
 
     return $exitCode
 }
@@ -100,25 +114,37 @@ function Invoke-ScriptAsUser {
         [hashtable]$ExtraParameters = @{}
     )
 
-    Write-Host "Executing script as User in another shell..." -ForegroundColor DarkMagenta
+    Write-Host "Executing script as User in new shell..." -ForegroundColor DarkMagenta
 
-    # Read the script content
-    $scriptContent = Get-Content -Path $ScriptPath -Raw
+    # Create a temporary file to store the exit code.
+    $tempFile = [System.IO.Path]::GetTempFileName()
 
     # Convert hashtable to a formatted string for PowerShell.
-    $extraParamsString = ($ExtraParameters.GetEnumerator() | ForEach-Object { "$($_.Key) `"$($_.Value)`"" }) -join " "
+    $extraParamsString = ($ExtraParameters.GetEnumerator() | ForEach-Object { "-$($_.Key) `'$($_.Value)`'" }) -join " "
 
-    # Construct the full command
-    $command = "& { $scriptContent } $extraParamsString"
+    # Build the PowerShell command to execute and return the exit code in a Admin shell.
+    $command = @"
+`$exitCode = & `"$ScriptPath`" $extraParamsString -ExecutionPolicy Bypass -ErrorAction Stop;
+`$exitCode | Out-File -FilePath `"$tempFile`" -NoNewline;
+Write-Host "Script completed, Press Enter to exit..."
+Read-Host
+"@
 
-    # Start a user PowerShell process using -Command
-    $process = Start-Process -FilePath "powershell.exe" -ArgumentList "-NoProfile -ExecutionPolicy Bypass -Command $command" -PassThru
+    # Run the admin shell and execute the command.
+    $process = Start-Process PowerShell -ArgumentList "-NoProfile -ExecutionPolicy Bypass -Command `"$command`"" -PassThru -Wait
     $process.WaitForExit()
 
-    # Capture and return the real exit code
-    $exitCode = $process.ExitCode
+    # Get the exit code stored in the temp file.
+    $exitCode = Get-Content $tempFile -Raw
+    # Fallback in cases where exit code isn't returned because of an exception.
+    if ($exitCode -isnot [int]){
+        $exitCode = $Global:STATUS_FAILURE
+    }
 
-    Write-Host "Closed User shell Exit Code: $exitCode" -ForegroundColor DarkMagenta
+    # Remove the temp file used to store the exit code.
+    Remove-Item $tempFile -Force
+
+    Write-Host "Closed User shell. Exit Code: $exitCode" -ForegroundColor DarkMagenta
 
     return $exitCode
 }
@@ -133,7 +159,7 @@ function Get-ExceptionDetails {
     $errorMessage = $ErrorRecord.Exception.Message
     $lineNumber = $ErrorRecord.InvocationInfo.ScriptLineNumber
     $scriptName = $ErrorRecord.InvocationInfo.ScriptName
-    $stackTrace = $ErrorRecord.ScriptStackTrace
+    $scriptStackTrace = $ErrorRecord.ScriptStackTrace
 
     # Format the error message
     $errorDetails = @"
@@ -141,7 +167,7 @@ $($UTF.AngerSymbol) ERROR: $errorMessage
 $($UTF.OpenFileFolder) Script Name: $scriptName
 $($UTF.MagnifyingGlass) Error at Line: $lineNumber
 $($UTF.Pushpin) Stack Trace:
-$stackTrace
+$scriptStackTrace
 "@
 
     return $errorDetails

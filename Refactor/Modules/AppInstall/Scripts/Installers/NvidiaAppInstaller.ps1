@@ -39,21 +39,12 @@ try {
     # Check the last exit code
     if ($process.Exitcode -eq 0) {
         Write-Host "$($UTF.HeavyCheckMark) NVIDIA App in NOW installed." -ForegroundColor Green
-        Write-Host "Press any key to exit..."
-        Read-Host
-
         return $Global:STATUS_SUCCESS
     } else {
         Write-Host "$($UTF.CrossMark) Error installing NVIDIA App (Exit Code: $($process.ExitCode))" -ForegroundColor Red
-        Write-Host "Press any key to exit..."
-        Read-Host
-
-        return $Global:STATUS_FAILURE
+        return $process.ExitCode
     }
 } catch {
     Write-Host "$($UTF.CrossMark) Exception occurred in Nvidia App installation: $(Get-ExceptionDetails $_)" -ForegroundColor Red
-    Write-Host "Press any key to exit..."
-    Read-Host
-
     return $Global:STATUS_FAILURE
 }
