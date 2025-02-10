@@ -36,14 +36,14 @@ try {
     # Assign file types to 7-Zip.
     Write-Host "Setting file associations..." -ForegroundColor Yellow
     foreach ($ext in $extensions) {
-        $process = Start-Process -FilePath $SetUserFTA -ArgumentList "$ext 7zFM.exe" -NoNewWindow -PassThru
+        $process = Start-Process -FilePath $SetUserFTA -ArgumentList "$ext 7zFM.exe" -NoNewWindow -PassThru -Wait
         $process.WaitForExit()
 
         # Check the last exit code.
         if ($process.ExitCode -eq 0) {
-            Write-Host "$($UTF.CheckMark) File associations updated successfully!" -ForegroundColor Green
+            Write-Host "$($UTF.CheckMark) File ext '$ext' associations updated successfully!" -ForegroundColor Green
         } else {
-            Write-Host "$($UTF.CrossMark) Error setting file asosiation to 7-Zip (Exit Code: $($process.ExitCode)" -ForegroundColor Red
+            Write-Host "$($UTF.CrossMark) Error setting file ext $ext ' asosiation to 7-Zip (Exit Code: $($process.ExitCode))" -ForegroundColor Red
             $FailedAssociations += $ext
         }
     }
@@ -58,6 +58,6 @@ try {
     Write-Host "$($UTF.CheckMark) 7-Zip setup completed." -ForegroundColor Green
     return $Global:STATUS_SUCCESS
 } catch {
-    Write-Host "$($UTF.CrossMark) Exception occurred in 7Zip setup: $_" -ForegroundColor Red
+    Write-Host "$($UTF.CrossMark) Exception occurred in 7Zip setup: $(Get-ExceptionDetails $_)" -ForegroundColor Red
     return $Global:STATUS_FAILURE
 }

@@ -55,7 +55,7 @@ function Invoke-Scripts {
             }
         }
         catch {
-            Write-Host "$UTFCrossMark Error executing $($Script.Name): $_" -ForegroundColor Red
+            Write-Host "$UTFCrossMark Error executing $($Script.Name): $(Get-ExceptionDetails $_)" -ForegroundColor Red
             $FailedScripts += $Script.Name
         }
 

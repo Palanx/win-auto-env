@@ -3,6 +3,7 @@ $ScriptDir = Split-Path -Parent -Path $MyInvocation.MyCommand.Path
 
 # Import modules.
 Import-Module "$ScriptDir\..\..\..\Constants.psm1"
+Import-Module "$ScriptDir\..\..\..\Core.psm1"
 
 try {
     # Disable Snipping Tool from launching with Print Screen
@@ -15,6 +16,6 @@ try {
     Write-Host "$($UTF.CheckMark) Lightshot OS config completed." -ForegroundColor Green
     return $Global:STATUS_SUCCESS
 } catch {
-    Write-Host "$($UTF.CrossMark) Exception occurred in Lightshot setup: $_" -ForegroundColor Red
+    Write-Host "$($UTF.CrossMark) Exception occurred in Lightshot setup: $(Get-ExceptionDetails $_)" -ForegroundColor Red
     return $Global:STATUS_FAILURE
 }

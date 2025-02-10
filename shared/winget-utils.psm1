@@ -44,7 +44,7 @@ function Start-InstallWingetPackage {
             return $false
         }
     } catch {
-        Write-Host "$UTFCrossMark Exception occurred: $_" -ForegroundColor Red
+        Write-Host "$UTFCrossMark Exception occurred: $(Get-ExceptionDetails $_)" -ForegroundColor Red
         return $false
     }
 }

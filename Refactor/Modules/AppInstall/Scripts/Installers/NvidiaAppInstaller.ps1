@@ -3,9 +3,12 @@ $ScriptDir = Split-Path -Parent -Path $MyInvocation.MyCommand.Path
 
 # Import modules.
 Import-Module "$ScriptDir\..\..\..\Constants.psm1"
+Import-Module "$ScriptDir\..\..\..\Core.psm1"
 
 # Define paths.
 $NVIDIAAppInstallerPath = "$env:USERPROFILE\Downloads\NVIDIA_app.exe"
+
+# TODO: Fix this script.
 
 try {
     # Download NVIDIA App if not found.
@@ -30,18 +33,27 @@ try {
 
     # Install the app
     Write-Host "Installing NVIDIA App..." -ForegroundColor Yellow
-    $process = Start-Process -FilePath $NVIDIAAppInstallerPath -ArgumentList "/s /noreboot" -NoNewWindow -PassThru
+    $process = Start-Process -FilePath $NVIDIAAppInstallerPath -ArgumentList "/s /noreboot" -NoNewWindow -PassThru -Wait
     $process.WaitForExit()
 
     # Check the last exit code
     if ($process.Exitcode -eq 0) {
         Write-Host "$($UTF.HeavyCheckMark) NVIDIA App in NOW installed." -ForegroundColor Green
+        Write-Host "Press any key to exit..."
+        Read-Host
+
         return $Global:STATUS_SUCCESS
     } else {
         Write-Host "$($UTF.CrossMark) Error installing NVIDIA App (Exit Code: $($process.ExitCode))" -ForegroundColor Red
+        Write-Host "Press any key to exit..."
+        Read-Host
+
         return $Global:STATUS_FAILURE
     }
 } catch {
-    Write-Host "$($UTF.CrossMark) Exception occurred in Nvidia App installation: $_" -ForegroundColor Red
+    Write-Host "$($UTF.CrossMark) Exception occurred in Nvidia App installation: $(Get-ExceptionDetails $_)" -ForegroundColor Red
+    Write-Host "Press any key to exit..."
+    Read-Host
+
     return $Global:STATUS_FAILURE
 }

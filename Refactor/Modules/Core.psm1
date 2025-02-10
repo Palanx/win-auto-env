@@ -24,7 +24,7 @@ function Restart-Explorer
         $explorerRunning = Get-Process -Name explorer -ErrorAction SilentlyContinue
     } while (-not $explorerRunning)
 
-    Write-Host "$($UTF.CheckMark)Explorer restarted successfully." -ForegroundColor Green
+    Write-Host "$($UTF.CheckMark) Explorer restarted successfully." -ForegroundColor Green
 }
 
 # Get if the current PowerShell session has administrator privileges.
@@ -35,11 +35,11 @@ function Get-IsAdmin {
 }
 
 # Run a script with the correct permissions.
-function Run-ScriptWithCorrectPermissions
+function Invoke-ScriptWithCorrectPermissions
 {
     param (
         [string]$ScriptPath,
-        [string]$ExtraParameters = "",
+        [hashtable]$ExtraParameters = @{},
         [bool]$RequiresAdmin = $false
     )
 
@@ -48,34 +48,104 @@ function Run-ScriptWithCorrectPermissions
         throw "The script path '$ScriptPath' doesn't exist."
     }
 
-    [int]$exitCode
-
     # The script will run a new admin shell.
     if ($RequiresAdmin -and -not (Get-IsAdmin))
     {
-        Write-Host "Executing script as Administrator in another shell..." -ForegroundColor DarkMagenta
-        $arguments = "-NoProfile -ExecutionPolicy Bypass -File `"$ScriptPath`" $ExtraParameters"
-        $process = Start-Process PowerShell -ArgumentList $arguments -Verb RunAs -PassThru
-        $process.WaitForExit()
-        $exitCode = $process.ExitCode;
+        return Invoke-ScriptAsAdmin -ScriptPath $ScriptPath -ExtraParameters $ExtraParameters
     }
     # The script will run a new non-admin shell (simulates running in the same window).
     elseif (-not $RequiresAdmin -and (Get-IsAdmin))
     {
-        Write-Host "Executing script as Non-Administrator in another shell..." -ForegroundColor DarkMagenta
-        $arguments = "/trustlevel:0x20000 `"powershell.exe -NoProfile -File `"$ScriptPath`" $ExtraParameters`""
-        $process = Start-Process "runas.exe" -ArgumentList $arguments -PassThru
-        $process.WaitForExit()
-        $exitCode = $process.ExitCode;
+        return Invoke-ScriptAsUser -ScriptPath $ScriptPath -ExtraParameters $ExtraParameters
     }
     # The script is running with correct permissions.
     else
     {
-        $exitCode = & $ScriptPath @ExtraParameters -ExecutionPolicy Bypass -ErrorAction Stop
+        return & $ScriptPath @ExtraParameters -ExecutionPolicy Bypass -ErrorAction Stop
+    }
+}
+
+# Run a script as admin.
+function Invoke-ScriptAsAdmin {
+    param (
+        [string]$ScriptPath,
+        [hashtable]$ExtraParameters = @{}
+    )
+
+    Write-Host "Executing script as Admin using PsExec..." -ForegroundColor DarkMagenta
+
+    # Validate if PsExec is available in PATH
+    if (-Not (Get-Command psexec -ErrorAction SilentlyContinue)) {
+        Write-Host "❌ PsExec not found in PATH. Please install it or add it to your environment variables." -ForegroundColor Red
+        exit 1
     }
 
-    return $exitCode;
+    # Convert hashtable to a formatted string for PowerShell.
+    $extraParamsString = ($ExtraParameters.GetEnumerator() | ForEach-Object { "$($_.Key) `"$($_.Value)`"" }) -join " "
+
+    # Run the script using PsExec with SYSTEM privileges
+    $process = Start-Process psexec -ArgumentList "-accepteula -s powershell.exe -NoProfile -ExecutionPolicy Bypass -File `"$ScriptPath`" $extraParamsString" -PassThru
+    $process.WaitForExit()
+    $exitCode = $process.ExitCode
+
+    Write-Host "Closed Admin Shell via PsExec. Exit Code: $exitCode" -ForegroundColor DarkMagenta
+
+    return $exitCode
+}
+
+# Run a script as user.
+function Invoke-ScriptAsUser {
+    param (
+        [string]$ScriptPath,
+        [hashtable]$ExtraParameters = @{}
+    )
+
+    Write-Host "Executing script as User in another shell..." -ForegroundColor DarkMagenta
+
+    # Read the script content
+    $scriptContent = Get-Content -Path $ScriptPath -Raw
+
+    # Convert hashtable to a formatted string for PowerShell.
+    $extraParamsString = ($ExtraParameters.GetEnumerator() | ForEach-Object { "$($_.Key) `"$($_.Value)`"" }) -join " "
+
+    # Construct the full command
+    $command = "& { $scriptContent } $extraParamsString"
+
+    # Start a user PowerShell process using -Command
+    $process = Start-Process -FilePath "powershell.exe" -ArgumentList "-NoProfile -ExecutionPolicy Bypass -Command $command" -PassThru
+    $process.WaitForExit()
+
+    # Capture and return the real exit code
+    $exitCode = $process.ExitCode
+
+    Write-Host "Closed User shell Exit Code: $exitCode" -ForegroundColor DarkMagenta
+
+    return $exitCode
+}
+
+function Get-ExceptionDetails {
+    param (
+        [Parameter(Mandatory=$true)]
+        [System.Management.Automation.ErrorRecord]$ErrorRecord
+    )
+
+    # Capture error details
+    $errorMessage = $ErrorRecord.Exception.Message
+    $lineNumber = $ErrorRecord.InvocationInfo.ScriptLineNumber
+    $scriptName = $ErrorRecord.InvocationInfo.ScriptName
+    $stackTrace = $ErrorRecord.ScriptStackTrace
+
+    # Format the error message
+    $errorDetails = @"
+$($UTF.AngerSymbol) ERROR: $errorMessage
+$($UTF.OpenFileFolder) Script Name: $scriptName
+$($UTF.MagnifyingGlass) Error at Line: $lineNumber
+$($UTF.Pushpin) Stack Trace:
+$stackTrace
+"@
+
+    return $errorDetails
 }
 
 # Export the functions.
-Export-ModuleMember -Function Restart-Explorer, Get-IsAdmin, Run-ScriptWithCorrectPermissions
+Export-ModuleMember -Function Restart-Explorer, Get-IsAdmin, Invoke-ScriptWithCorrectPermissions, Get-ExceptionDetails

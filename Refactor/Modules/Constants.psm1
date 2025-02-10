@@ -18,6 +18,9 @@ $UTF = @{
     HourGlass       = [char]::ConvertFromUtf32(0x0000231B) # ⌛
     JapaneseGoblin  = [char]::ConvertFromUtf32(0x0001F47A) # 👺
     AngerSymbol     = [char]::ConvertFromUtf32(0x0001F4A2) # 💢
+    MagnifyingGlass = [char]::ConvertFromUtf32(0x0001F50D) # 🔍
+    OpenFileFolder  = [char]::ConvertFromUtf32(0x0001F4C2) # 📂
+    Pushpin         = [char]::ConvertFromUtf32(0x0001F4CC) # 📌
 
     # Font Styles
     StartBold       = "$([char]27)[1m"

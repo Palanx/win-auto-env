@@ -3,9 +3,11 @@ $ScriptDir = Split-Path -Parent -Path $MyInvocation.MyCommand.Path
 
 # Import modules.
 Import-Module "$ScriptDir\..\..\..\Constants.psm1"
+Import-Module "$ScriptDir\..\..\..\Core.psm1"
 
 # Define the Toolbox settings file path.
 $ToolboxSettingsPath = "$env:LOCALAPPDATA\JetBrains\Toolbox\.settings.json"
+$CustomInstallPath = "D:\Program Files\JetBrains\Toolbox"
 
 try {
     # Run the Toolbox for first time to generate the settings file.
@@ -40,6 +42,6 @@ try {
         return $Global:STATUS_SUCCESS
     }
 } catch {
-    Write-Host "$($UTF.CrossMark) Exception occurred in JetBrains Toolbox setup: $_" -ForegroundColor Red
+    Write-Host "$($UTF.CrossMark) Exception occurred in JetBrains Toolbox setup: $(Get-ExceptionDetails $_)" -ForegroundColor Red
     return $Global:STATUS_FAILURE
 }

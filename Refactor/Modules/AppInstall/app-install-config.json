@@ -3,6 +3,12 @@
     {
       "enabled": true,
       "category": "dev",
+      "package-id": "Microsoft.Sysinternals.PsTools",
+      "package-alias": "PsTools",
+      "silent": true
+    },{
+      "enabled": true,
+      "category": "dev",
       "package-id": "Fork.Fork",
       "package-alias": "Fork",
       "silent": true
@@ -232,12 +238,12 @@
       "requires-admin": false,
       "app-alias": "UnityHub",
       "script-path": "/Scripts/Installers/UnityHubInstaller.ps1",
-      "installation-path": "D:/Program Files/Unity Hub/Unity Hub.exe"
+      "installation-path": "D:/Program Files/Unity Hub"
     },
     {
       "enabled": true,
       "category": "os",
-      "requires-admin": false,
+      "requires-admin": true,
       "app-alias": "Nvidia App",
       "script-path": "/Scripts/Installers/NvidiaAppInstaller.ps1"
     }

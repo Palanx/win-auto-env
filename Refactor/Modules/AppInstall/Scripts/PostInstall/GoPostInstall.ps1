@@ -3,6 +3,7 @@ $ScriptDir = Split-Path -Parent -Path $MyInvocation.MyCommand.Path
 
 # Import modules.
 Import-Module "$ScriptDir\..\..\..\Constants.psm1"
+Import-Module "$ScriptDir\..\..\..\Core.psm1"
 
 # Ensure GOPATH\bin is in User PATH.
 $GoPathBin = "$env:USERPROFILE\go\bin"
@@ -19,8 +20,8 @@ try {
         Write-Host "$($UFT.CheckMark)`$env:GOPATH\bin is already in PATH." -ForegroundColor Green
     }
 
-    return $Global:STATUS_SUCCESS = 0
+    return $Global:STATUS_SUCCESS
 } catch {
-    Write-Host "$($UTF.CrossMark) Exception occurred in Go setup: $_" -ForegroundColor Red
+    Write-Host "$($UTF.CrossMark) Exception occurred in Go setup: $(Get-ExceptionDetails $_)" -ForegroundColor Red
     return $Global:STATUS_FAILURE
 }

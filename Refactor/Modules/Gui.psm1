@@ -100,4 +100,14 @@ function Write-SelectionList
     return $selectedIndex
 }
 
-Export-ModuleMember -Function Write-Header, Write-SelectionList
+function Write-Separator
+{
+    param (
+        [System.ConsoleColor]$Color = "White",
+        [int]$Width = 40
+    )
+
+    Write-Host "$( -join ('═' * $Width) )`n" -ForegroundColor $Color
+}
+
+Export-ModuleMember -Function Write-Header, Write-SelectionList, Write-Separator

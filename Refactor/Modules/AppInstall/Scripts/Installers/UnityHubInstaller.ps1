@@ -7,6 +7,7 @@ $ScriptDir = Split-Path -Parent -Path $MyInvocation.MyCommand.Path
 
 # Import modules.
 Import-Module "$ScriptDir\..\..\..\Constants.psm1"
+Import-Module "$ScriptDir\..\..\..\Core.psm1"
 
 # Define paths
 $UnityHubInstaller = "$env:TEMP\UnityHubSetup.exe"
@@ -15,11 +16,12 @@ $UnityHubDownloadURL = "https://public-cdn.cloud.unity3d.com/hub/prod/UnityHubSe
 try {
     # Install UnityHub if not found
     if (Test-Path $InstallationPath) {
-        Write-Host "$($(UTF.HeavyCheckMark)) UnityHub is already installed." -ForegroundColor Green
+        Write-Host "$($UTF.HeavyCheckMark) UnityHub is already installed." -ForegroundColor Green
+        return $Global:STATUS_SUCCESS
     } else {
         # Download NVIDIA App if not found
         if (Test-Path $UnityHubInstalle) {
-            Write-Host "$($(UTF.CheckMark)) UnityHub installer already in $UnityHubInstaller." -ForegroundColor Green
+            Write-Host "$($UTF.CheckMark)) UnityHub installer already in $UnityHubInstaller." -ForegroundColor Green
         } else {
             Write-Host "Downloading UnityHub installer into $UnityHubInstaller..." -ForegroundColor Yellow
             $response = Invoke-WebRequest -Uri $UnityHubDownloadURL -OutFile $UnityHubInstaller
@@ -47,6 +49,6 @@ try {
         return $Global:STATUS_FAILURE
     }
 } catch {
-    Write-Host "$($UTF.CrossMark) Exception occurred installing Unity HUB: $_" -ForegroundColor Red
+    Write-Host "$($UTF.CrossMark) Exception occurred installing Unity HUB: $(Get-ExceptionDetails $_)" -ForegroundColor Red
     return $Global:STATUS_FAILURE
 }

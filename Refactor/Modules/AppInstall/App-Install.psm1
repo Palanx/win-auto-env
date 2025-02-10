@@ -19,18 +19,18 @@ $ConfigData = Get-Content -Path $ConfigPath -Raw | ConvertFrom-Json
 $installCategories = @("dev", "os", "personal")
 
 # Define installer types.
-$WingetPackagesType = "WingetPackages"
-$WinStoreInstallersType = "WinStoreInstallers"
-$StandaloneInstallersType = "StandaloneInstallers"
-$InstallationTypes = @($WingetPackagesType, $WinStoreInstallersType, $StandaloneInstallersType)
+$WingetInstallationType = "WingetInstallation"
+$WinStoreInstallationType = "WinStoreInstallation"
+$StandaloneInstallationType = "StandaloneInstallation"
+$InstallationTypes = @($WingetInstallationType, $WinStoreInstallationType, $StandaloneInstallationType)
 
 # Initialize categorized configurations.
 $categorizedConfigs = @{}
 foreach ($category in $installCategories) {
-    $categorizedConfigs[$category] = @{
-        $WingetPackagesType       = @()
-        $WinStoreInstallersType   = @()
-        $InstallationTypes = @()
+    $categorizedConfigs[$category]  = @{
+        $WingetInstallationType       = [System.Collections.ArrayList]@()
+        $WinStoreInstallationType     = [System.Collections.ArrayList]@()
+        $StandaloneInstallationType   = [System.Collections.ArrayList]@()
     }
 }
 
@@ -53,21 +53,23 @@ function Categorize-Installers {
 }
 
 # Categorize all installers.
-Categorize-Installers -installerType $WingetPackagesType -installers $ConfigData.'winget-packages'
-Categorize-Installers -installerType $WinStoreInstallersType -installers $ConfigData.'win-store-installers'
-Categorize-Installers -installerType $StandaloneInstallersType -installers $ConfigData.'standalone-installers'
+Categorize-Installers -installerType $WingetInstallationType -installers $ConfigData.'winget-packages'
+Categorize-Installers -installerType $WinStoreInstallationType -installers $ConfigData.'win-store-installers'
+Categorize-Installers -installerType $StandaloneInstallationType -installers $ConfigData.'standalone-installers'
 
 # Start the App Install process.
 function Start-AppInstall {
     foreach ($category in $installCategories) {
-        Write-Host "Starting '$category' Apps installation..."
+        Write-Header -Title "'$category' Apps installation"
 
         $failedInstallations = 0
         foreach ($installerType in $InstallationTypes) {
             $installers = $categorizedConfigs[$category][$installerType]
 
             if ($installers.Count -gt 0) {
-                Write-Host "There are $($installers.Count) $category Apps to install via $installerType."
+                $infoString = "There are $($installers.Count) '$category' Apps to install via $installerType."
+                Write-Host $infoString -ForegroundColor White
+                Write-Separator -Width $infoString.Length
 
                 foreach ($config in $installers) {
                     $installFunction = Get-Command -Name "Start-$installerType" -ErrorAction SilentlyContinue
@@ -86,14 +88,16 @@ function Start-AppInstall {
                     }
                 }
             }
+            Write-Host ""
         }
 
         if ($failedInstallations -gt 0) {
-            Write-Host "$($UTF.WarningSign) WARNING: $failedInstallations installations failed in the category '$category'." -ForegroundColor Red
+            Write-Host "$($UTF.WarningSign) WARNING: $failedInstallations installations failed in the category '$category'.`n" -ForegroundColor Red
         } else {
-            Write-Host "$($UTF.HeavyCheckMark) All apps in category '$category' installed successfully!" -ForegroundColor Green
+            Write-Host "$($UTF.HeavyCheckMark) All apps in category '$category' installed successfully!`n" -ForegroundColor Green
         }
     }
+    Write-Host "Returning to main menu...`n"
 }
 
 # Start a standalone installation process.
@@ -108,14 +112,14 @@ function Start-StandaloneInstallation
         [string]$scriptPath = $Config.'script-path'
         [string]$installationPath = $Config.'installation-path'
         [bool]$requiresAdmin = $Config.'requires-admin'
-        [string]$extraParameters = ""
+        $extraParameters = @{}
         if ($null -ne $installationPath -and ($installationPath.Length -gt 0))
         {
-            $extraParameters += "-InstallationPath '$installationPath'"
+            $extraParameters["InstallationPath"] = $installationPath;
         }
 
         Write-Host "$($UTF.HourGlass) Starting app '$appAlias' standalone installation script..." -ForegroundColor Yellow
-        [int]$exitCode = Run-ScriptWithCorrectPermissions -ScriptPath $scriptPath -ExtraParameters $extraParameters -RequiresAdmin $requiresAdmin
+        $exitCode = Invoke-ScriptWithCorrectPermissions -ScriptPath "$ScriptDir$scriptPath" -ExtraParameters $extraParameters -RequiresAdmin $requiresAdmin
 
         # Check the last exit code.
         if ($exitCode -eq $Global:STATUS_SUCCESS) {
@@ -126,7 +130,7 @@ function Start-StandaloneInstallation
         Write-Host "$($UTF.CrossMark) Error executing app '$appAlias' standalone installation script (Exit Code: $exitCode)" -ForegroundColor Red
         return $Global:STATUS_FAILURE
     } catch {
-        Write-Host "$($UTF.CrossMark) Exception occurred in app '$appAlias' standalone installation script execution: $_" -ForegroundColor Red
+        Write-Host "$($UTF.CrossMark) Exception occurred in app '$appAlias' standalone installation script execution: $(Get-ExceptionDetails $_)" -ForegroundColor Red
         return $Global:STATUS_FAILURE
     }
 }
