@@ -8,9 +8,13 @@ Import-Module "$ScriptDir\..\..\..\Core.psm1"
 # Define paths.
 $NVIDIAAppInstallerPath = "$env:USERPROFILE\Downloads\NVIDIA_app.exe"
 
-# TODO: Fix this script.
-
 try {
+    $NvidiaApp = Get-ItemProperty HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\* | Where-Object { $_.DisplayName -like "NVIDIA App*" }
+    if ($NvidiaApp) {
+        Write-Host "$($UTF.HeavyCheckMark) NVIDIA App is already installed. Version: $($NvidiaApp.DisplayVersion)" -ForegroundColor Green
+        return $Global:STATUS_SUCCESS
+    }
+
     # Download NVIDIA App if not found.
     if (Test-Path $NVIDIAAppInstallerPath)
     {
@@ -19,7 +23,7 @@ try {
     else
     {
         Write-Host "Downloading NVIDIA App..." -ForegroundColor Yellow
-        $response = Invoke-WebRequest -Uri "https://us.download.nvidia.com/nvapp/client/11.0.1.189/NVIDIA_app_v11.0.1.189.exe" -OutFile $NVIDIAAppInstallerPath
+        $response = Invoke-WebRequest -Uri "https://us.download.nvidia.com/nvapp/client/11.0.1.189/NVIDIA_app_v11.0.1.189.exe" -OutFile $NVIDIAAppInstallerPath -UseBasicParsing
         $statusCode = $response.StatusCode
 
         # Check the last exit code.

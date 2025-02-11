@@ -17,7 +17,7 @@ try {
     # Download SetUserFTA.exe if not found.
     if (!(Test-Path $SetUserFTA)) {
         Write-Host "Downloading SetUserFTA..." -ForegroundColor Yellow
-        $response = Invoke-WebRequest -Uri "https://github.com/qis/windows/raw/refs/heads/master/setup/SetUserFTA/SetUserFTA.exe" -OutFile $SetUserFTA
+        $response = Invoke-WebRequest -Uri "https://github.com/qis/windows/raw/refs/heads/master/setup/SetUserFTA/SetUserFTA.exe" -OutFile $SetUserFTA -UseBasicParsing
         $statusCode = $response.StatusCode
 
         # Check the status code.
