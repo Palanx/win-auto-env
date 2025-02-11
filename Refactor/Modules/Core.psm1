@@ -142,5 +142,44 @@ $scriptStackTrace
     return $errorDetails
 }
 
+# Register a ProgID.
+function Register-ProgID {
+    param (
+        [string]$ProgID,        # e.g. "MyApp.Document.1"
+        [string]$ProgramName,   # e.g. "My App"
+        [string]$AppPath        # e.g. "C:\Path\To\YourApp.exe"
+    )
+
+    # Define paths.
+    $registryPath = "HKCU:\Software\Classes\$ProgID"
+
+    try
+    {
+        # Ensure the path exists.
+        if (Test-Path $registryPath) {
+            Write-Host "$($UTF.CheckMark) ProgID '$ProgID' is already registered. Skipping registration." -ForegroundColor Green
+            return $Global:STATUS_SUCCESS
+        }
+
+        # Create ProgID entry.
+        New-Item -Path $registryPath -Force | Out-Null
+        # Set the default value.
+        Set-ItemProperty -Path $registryPath -Name "(Default)" -Value "$ProgramName"
+
+        # Add the shell command for file association
+        $commandPath = "$registryPath\shell\open\command"
+        New-Item -Path $commandPath -Force | Out-Null
+        Set-ItemProperty -Path $commandPath -Name "(Default)" -Value "`"$AppPath`" `%1"
+
+        Write-Host "ProgID '$ProgID' registered successfully under HKCU."
+        return $Global:STATUS_SUCCESS
+    }
+    catch
+    {
+        Write-Host "$($UTF.CrossMark) Exception occurred registering the ProgID '$ProgID': $(Get-ExceptionDetails $_)" -ForegroundColor Red
+        return $Global:STATUS_FAILURE
+    }
+}
+
 # Export the functions.
-Export-ModuleMember -Function Restart-Explorer, Get-IsAdmin, Invoke-ScriptWithCorrectPermissions, Get-ExceptionDetails
+Export-ModuleMember -Function Restart-Explorer, Get-IsAdmin, Invoke-ScriptWithCorrectPermissions, Get-ExceptionDetails, Register-ProgID

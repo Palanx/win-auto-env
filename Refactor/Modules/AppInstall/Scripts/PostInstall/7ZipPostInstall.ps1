@@ -6,6 +6,8 @@ Import-Module "$ScriptDir\..\..\..\Constants.psm1"
 Import-Module "$ScriptDir\..\..\..\Core.psm1"
 
 # Define paths
+$ProgID = "7zFM.exe"
+$7zLocation = "C:\Program Files\7-Zip\7zFM.exe"
 $SetUserFTA = "$env:USERPROFILE\Downloads\SetUserFTA.exe"
 
 # List of file extensions to associate with 7-Zip.
@@ -30,25 +32,29 @@ try {
         Write-Host "$($UTF.CheckMark) SetUserFTA already downloaded." -ForegroundColor Green
     }
 
+    # Register the 7Zip ProgID.
+    $registerExitCode = Register-ProgID -ProgID $ProgID -ProgramName "7-Zip File Manager" -AppPath $7zLocation
+    if ($registerExitCode -ne $Global:STATUS_SUCCESS)
+    {
+        return $registerExitCode;
+    }
+
     # Track failed 7-Zip associations.
     $FailedAssociations = @()
 
     # Assign file types to 7-Zip.
     Write-Host "Setting file associations..." -ForegroundColor Yellow
     foreach ($ext in $extensions) {
-        $process = Start-Process -FilePath $SetUserFTA -ArgumentList "$ext 7zFM.exe" -NoNewWindow -PassThru -Wait
-        $process.WaitForExit()
+        $output = & $SetUserFTA $ext $ProgID 2>&1
 
         # Check the last exit code.
-        if ($process.ExitCode -eq 0) {
+        if (!$output) {
             Write-Host "$($UTF.CheckMark) File ext '$ext' associations updated successfully!" -ForegroundColor Green
         } else {
-            Write-Host "$($UTF.CrossMark) Error setting file ext $ext ' asosiation to 7-Zip (Exit Code: $($process.ExitCode))" -ForegroundColor Red
+            Write-Host "$($UTF.CrossMark) Error setting file ext '$ext' asosiation to 7-Zip (Output: $output)" -ForegroundColor Red
             $FailedAssociations += $ext
         }
     }
-
-    Restart-Explorer
 
     if ($FailedAssociations.Count -gt 0)
     {
