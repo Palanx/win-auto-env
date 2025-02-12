@@ -6,7 +6,6 @@ Remove-Module Constants -ErrorAction SilentlyContinue
 Remove-Module Core -ErrorAction SilentlyContinue
 Remove-Module Gui -ErrorAction SilentlyContinue
 Remove-Module Backup-System -ErrorAction SilentlyContinue
-Remove-Module Restore-System -ErrorAction SilentlyContinue
 Remove-Module App-Install -ErrorAction SilentlyContinue
 
 # Import modules.
@@ -14,11 +13,10 @@ Import-Module "$ScriptDir\Modules\Constants.psm1"
 Import-Module "$ScriptDir\Modules\Core.psm1"
 Import-Module "$ScriptDir\Modules\Gui.psm1"
 Import-Module "$ScriptDir\Modules\BackupSystem\Backup-System.psm1"
-Import-Module "$ScriptDir\Modules\RestoreSystem\Restore-System.psm1"
 Import-Module "$ScriptDir\Modules\AppInstall\App-Install.psm1"
 
 # Define the path of the config json.
-$SystemConfigPath = "$ScriptDir\..\system-config.json"
+$SystemConfigPath = "$ScriptDir\system-config.json"
 
 # Read JSON file and convert to PowerShell object.
 $SystemConfigData = Get-Content -Path $SystemConfigPath -Raw | ConvertFrom-Json
