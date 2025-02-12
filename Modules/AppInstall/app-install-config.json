@@ -102,6 +102,13 @@
     {
       "enabled": true,
       "category": "os",
+      "package-id": "AutoHotkey.AutoHotkey",
+      "package-alias": "AutoHotkey",
+      "silent": true
+    },
+    {
+      "enabled": true,
+      "category": "os",
       "package-id": "Microsoft.DirectX",
       "package-alias": "DirectX",
       "silent": true
