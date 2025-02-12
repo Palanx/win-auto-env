@@ -1,10 +1,4 @@
-# Get full script path even if $PSScriptRoot is't set.
-$ScriptDir = Split-Path -Parent -Path $MyInvocation.MyCommand.Path
-
 # Define Global variables.
-[string]$Global:BACKUP_LOG_PATH = "$ScriptDir\..\Logs\backup_log.txt"
-[string]$Global:RESTORE_LOG_PATH = "$ScriptDir\..\Logs\restore_log.txt"
-[string]$Global:APPINSTALL_LOG_PATH = "$ScriptDir\..\Logs\app_install_log.txt"
 [int]$Global:STATUS_SUCCESS = 0
 [int]$Global:STATUS_FAILURE = 1
 

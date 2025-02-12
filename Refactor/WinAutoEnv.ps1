@@ -17,10 +17,16 @@ Import-Module "$ScriptDir\Modules\BackupSystem\Backup-System.psm1"
 Import-Module "$ScriptDir\Modules\RestoreSystem\Restore-System.psm1"
 Import-Module "$ScriptDir\Modules\AppInstall\App-Install.psm1"
 
+# Define the path of the config json.
+$SystemConfigPath = "$ScriptDir\..\system-config.json"
+
+# Read JSON file and convert to PowerShell object.
+$SystemConfigData = Get-Content -Path $SystemConfigPath -Raw | ConvertFrom-Json
+
 # Define Options and their Handlers.
 $BuckupSystemOption = "Backup System"
-$RestoreSystemOption = "Restore System"
-$AppInstallOption = "AppInstall"
+$RestoreSystemOption = "Restore System Buckup"
+$AppInstallOption = "App Install"
 $ExitOption = "Exit"
 $Options = @($BuckupSystemOption, $RestoreSystemOption, $AppInstallOption, $ExitOption)
 

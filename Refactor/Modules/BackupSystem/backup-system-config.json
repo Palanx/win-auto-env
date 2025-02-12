@@ -1,0 +1,87 @@
+{
+  "backups-location": "V:/AutoBackups/",
+  "backups-configs": [
+    {
+      "enabled": true,
+      "name": "Chrome Profile",
+      "backup-script": "/Scripts/Backups/Backup-ChromeProfile.ps1",
+      "backup-requires-admin": false,
+      "restore-script": "/Scripts/Restores/Restore-ChromeProfile.ps1",
+      "restore-requires-admin": false,
+      "backup-location-name": "ChromeProfileBackup"
+    },
+    {
+      "enabled": true,
+      "name": "Drive Letters",
+      "backup-script": "/Scripts/Backups/Backup-DriveLetters.ps1",
+      "backup-requires-admin": false,
+      "restore-script": "/Scripts/Restores/Restore-DriveLetters.ps1",
+      "restore-requires-admin": false,
+      "backup-location-name": "DriveLettersBackup.txt"
+    },
+    {
+      "enabled": true,
+      "requiresAdmin": false,
+      "name": "Env Variables",
+      "backup-script": "/Scripts/Backups/Backup-EnvVariables.ps1",
+      "backup-requires-admin": false,
+      "restore-script": "/Scripts/Restores/Restore-EnvVariables.ps1",
+      "restore-requires-admin": false,
+      "backup-location-name": "EnvVariablesBackup.txt",
+      "extra-parameters": {
+        "env-vars" : [ "GIT_SSH" ]
+      }
+    },
+    {
+      "enabled": true,
+      "requiresAdmin": false,
+      "name": "File Explorer Quick Access favorites",
+      "backup-script": "/Scripts/Backups/Backup-ExplorerFavorites.ps1",
+      "backup-requires-admin": false,
+      "restore-script": "/Scripts/Restores/Restore-ExplorerFavorites.ps1",
+      "restore-requires-admin": false,
+      "backup-location-name": "ExplorerFavoritesBackup"
+    },
+    {
+      "enabled": true,
+      "requiresAdmin": false,
+      "name": "Important Files",
+      "backup-script": "/Scripts/Backups/Backup-ImportantFiles.ps1",
+      "backup-requires-admin": false,
+      "restore-script": "/Scripts/Restores/Restore-ImportantFiles.ps1",
+      "restore-requires-admin": false,
+      "backup-location-name": "ImportantFilesBackup",
+      "extra-parameters": {
+        "paths-to-backup" : [
+          "$env:USERPROFILE/OneDrive/Documents/FromSoftware",
+          "$env:USERPROFILE/OneDrive/Documents/My Games",
+          "$env:USERPROFILE/OneDrive/Documents/NBGI",
+          "$env:USERPROFILE/OneDrive/Imágenes",
+          "$env:USERPROFILE/OneDrive/Escritorio",
+          "$env:USERPROFILE/AppData/Roaming/DS4Windows",
+          "$env:USERPROFILE/AppData/Roaming/G HUB"
+        ]
+      }
+    },
+    {
+      "enabled": true,
+      "requiresAdmin": false,
+      "name": "Powershell Profile and Modules",
+      "backup-script": "/Scripts/Backups/Backup-PowershellProfile.ps1",
+      "backup-requires-admin": false,
+      "restore-script": "/Scripts/Restores/Restore-PowershellProfile.ps1",
+      "restore-requires-admin": false,
+      "backup-location-name": "PowerShellProfileBackup"
+    },
+    {
+      "enabled": true,
+      "requiresAdmin": false,
+      "name": "SSH Keys",
+      "backup-script": "/Scripts/Backups/Backup-SSHKeys.ps1",
+      "backup-requires-admin": false,
+      "restore-script": "/Scripts/Restores/Restore-SSHKeys.ps1",
+      "restore-requires-admin": false,
+      "backup-location-name": "SSHKeysBackup"
+    }
+  ]
+}
