@@ -42,7 +42,7 @@ function Start-BackupSystem
         $name = $backupConfig.name
         $requiresAdmin = $backupConfig.'backup-requires-admin'
         $scriptPath = $backupConfig.'backup-script'
-        $parameters = $backupConfig.'extra-parameters'
+        $configParameters = $backupConfig.'extra-parameters'
         $backupLocationName = $backupConfig.'backup-location-name'
 
         $infoString = "'$name' Backup '$dateString' process will be executed."
@@ -59,22 +59,28 @@ function Start-BackupSystem
                 "Name" = $name
                 "BackupLocation" = "$backupLocation"
             }
-            if ($null -ne $parameters)
+            if ($null -ne $configParameters)
             {
-                $extraParameters['ExtraParameters'] = $parameters
+                $hashtableParameters = @{}
+                foreach ($key in $configParameters.PSObject.Properties.Name)
+                {
+                    $hashtableParameters[$key] = $configParameters.$key
+                }
+
+                $extraParameters['ExtraParameters'] = $hashtableParameters
             }
 
-            $exitCode = Invoke-ScriptWithCorrectPermissions -ScriptPath "$ScriptDir$scriptPath" -ExtraParameters $extraParameters -RequiresAdmin $requiresAdmin
+            $exitCode = Invoke-ScriptWithCorrectPermissions -ScriptPath "$ScriptDir$scriptPath" -ExtraParameters $extraParameters -RequiresAdmin $requiresAdmin | Select-Object -Last 1
             if ($exitCode -ne $Global:STATUS_SUCCESS)
             {
                 throw "Error executing the '$name' Backup '$dateString' process (Exit Code: $exitCode)"
             }
 
-            Write-Host "$($UTF.HeavyCheckMark) '$name' Backup '$dateString' process completed successfully." -ForegroundColor Green
+            Write-Host "$($UTF.HeavyCheckMark) '$name' Backup '$dateString' process completed successfully.`n" -ForegroundColor Green
         }
         catch
         {
-            Write-Host "$($UTF.CrossMark) Exception occurred in '$name' Backup '$dateString' process script execution: $(Get-ExceptionDetails $_)" -ForegroundColor Red
+            Write-Host "$($UTF.CrossMark) Exception occurred in '$name' Backup '$dateString' process script execution: $(Get-ExceptionDetails $_)`n" -ForegroundColor Red
             $failedBackups++
         }
     }
@@ -131,7 +137,7 @@ function Start-RestoreSystem
         $name = $backupConfig.name
         $requiresAdmin = $backupConfig.'restore-requires-admin'
         $scriptPath = $backupConfig.'restore-script'
-        $parameters = $backupConfig.'extra-parameters'
+        $configParameters = $backupConfig.'extra-parameters'
         $backupLocationName = $backupConfig.'backup-location-name'
 
         $infoString = "'$name' Restore Backup '$dateString' process will be executed."
@@ -148,12 +154,19 @@ function Start-RestoreSystem
                 "Name" = $name
                 "BackupLocation" = "$backupLocation"
             }
-            if ($null -ne $parameters)
+
+            if ($null -ne $configParameters)
             {
-                $extraParameters['ExtraParameters'] = $parameters
+                $hashtableParameters = @{}
+                foreach ($key in $configParameters.PSObject.Properties.Name)
+                {
+                    $hashtableParameters[$key] = $configParameters.$key
+                }
+
+                $extraParameters['ExtraParameters'] = $hashtableParameters
             }
 
-            $exitCode = Invoke-ScriptWithCorrectPermissions -ScriptPath "$ScriptDir$scriptPath" -ExtraParameters $extraParameters -RequiresAdmin $requiresAdmin
+            $exitCode = Invoke-ScriptWithCorrectPermissions -ScriptPath "$ScriptDir$scriptPath" -ExtraParameters $extraParameters -RequiresAdmin $requiresAdmin | Select-Object -Last 1
             if ($exitCode -ne $Global:STATUS_SUCCESS)
             {
                 throw "Error executing the '$name' Restore Backup '$backupFolderName' process (Exit Code: $exitCode)"

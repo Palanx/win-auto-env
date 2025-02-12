@@ -24,6 +24,12 @@ try
     Write-Host "Restoring '$Name'..."
 
     foreach ($path in $pathsToBackup) {
+        # Expand path to recognize env variables.
+        $path = $ExecutionContext.InvokeCommand.ExpandString($path)
+
+        # Fix possible encoding problems.
+        $path = [System.Text.Encoding]::UTF8.GetString([System.Text.Encoding]::Default.GetBytes($path))
+
         $backupTarget = $path -replace [regex]::Escape($env:USERPROFILE), "$BackupLocation"
 
         if (Test-Path $backupTarget) {

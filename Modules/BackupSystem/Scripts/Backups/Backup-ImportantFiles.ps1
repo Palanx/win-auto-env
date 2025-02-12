@@ -23,6 +23,12 @@ try
     Write-Host "Backing up '$Name'..."
 
     foreach ($path in $pathsToBackup) {
+        # Expand path to recognize env variables.
+        $path = $ExecutionContext.InvokeCommand.ExpandString($path)
+
+        # Fix possible encoding problems.
+        $path = [System.Text.Encoding]::UTF8.GetString([System.Text.Encoding]::Default.GetBytes($path))
+
         if (Test-Path $path) {
             Write-Host "Ensuring files are available offline in: $path"
             attrib -P -S "$path" -R /S /D
