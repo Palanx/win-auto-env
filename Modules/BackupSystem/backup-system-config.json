@@ -16,7 +16,7 @@
       "backup-script": "/Scripts/Backups/Backup-DriveLetters.ps1",
       "backup-requires-admin": false,
       "restore-script": "/Scripts/Restores/Restore-DriveLetters.ps1",
-      "restore-requires-admin": false,
+      "restore-requires-admin": true,
       "backup-location-name": "DriveLettersBackup.txt"
     },
     {
@@ -80,7 +80,7 @@
       "backup-script": "/Scripts/Backups/Backup-SSHKeys.ps1",
       "backup-requires-admin": false,
       "restore-script": "/Scripts/Restores/Restore-SSHKeys.ps1",
-      "restore-requires-admin": false,
+      "restore-requires-admin": true,
       "backup-location-name": "SSHKeysBackup"
     }
   ]

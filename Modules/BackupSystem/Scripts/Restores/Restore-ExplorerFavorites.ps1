@@ -57,8 +57,6 @@ try
         Write-Host "$($UTF.WarningSign) No QuickAccess reg Backup found!" -ForegroundColor DarkRed
     }
 
-    Restart-Explorer
-
     if ( !$isBackupRestored )
     {
         Write-Host "$($UTF.WarningSign) No Automatic/Custom Destinations or 'QuickAccess' reg to Restore." -ForegroundColor Green

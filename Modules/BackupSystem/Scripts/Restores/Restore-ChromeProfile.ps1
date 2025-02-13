@@ -47,12 +47,6 @@ try
     # Restore Chrome profile.
     robocopy $BackupLocation $ChromeProfilePath /E /R:1 /W:1
 
-    # Restore session files explicitly
-    Copy-Item "$BackupLocation\Default\Current Session" $ChromeProfilePath\Default\ -Force
-    Copy-Item "$BackupLocation\Default\Current Tabs" $ChromeProfilePath\Default\ -Force
-    Copy-Item "$BackupLocation\Default\Last Session" $ChromeProfilePath\Default\ -Force
-    Copy-Item "$BackupLocation\Default\Last Tabs" $ChromeProfilePath\Default\ -Force
-
     Write-Host "$($UTF.CheckMark) '$Name' Backup Restore completed!" -ForegroundColor Green
     return $Global:STATUS_SUCCESS
 }

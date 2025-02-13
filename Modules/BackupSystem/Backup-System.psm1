@@ -166,7 +166,7 @@ function Start-RestoreSystem
                 $extraParameters['ExtraParameters'] = $hashtableParameters
             }
 
-            $exitCode = Invoke-ScriptWithCorrectPermissions -ScriptPath "$ScriptDir$scriptPath" -ExtraParameters $extraParameters -RequiresAdmin $requiresAdmin
+            $exitCode = Invoke-ScriptWithCorrectPermissions -ScriptPath "$ScriptDir$scriptPath" -ExtraParameters $extraParameters -RequiresAdmin $requiresAdmin | Select-Object -Last 1
             if ($exitCode -ne $Global:STATUS_SUCCESS)
             {
                 throw "Error executing the '$name' Restore Backup '$backupFolderName' process (Exit Code: $exitCode)"
