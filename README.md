@@ -14,6 +14,8 @@ installing all the necessary programs, configuring drive letters, environment va
 makes me sleepy, so I have created an application without dependencies (it requires some `.exe`, but they are not language dependencies
 hehehhe) to make the tedious process of formatting my computer as less horrible as possible.
 
+![img.png](main-menu.png)
+
 ---
 
 ## Functionalities
