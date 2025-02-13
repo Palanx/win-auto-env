@@ -19,14 +19,14 @@ try
     $drives = Get-WmiObject Win32_Volume | Where-Object { $_.DriveLetter -ne $null } | Select-Object DriveLetter, DeviceID
 
     $drives | ForEach-Object {
-        "$($_.DriveLetter) $($_.DeviceID)" | Out-File -Append -FilePath $BackupLocation
+        "$( $_.DriveLetter ) $( $_.DeviceID )" | Out-File -Append -FilePath $BackupLocation
     }
 
-    Write-Host "$($UTF.CheckMark) '$Name' Backup completed! Saved to: '$BackupLocation'" -ForegroundColor Green
+    Write-Host "$( $UTF.CheckMark ) '$Name' Backup completed! Saved to: '$BackupLocation'" -ForegroundColor Green
     return $Global:STATUS_SUCCESS
 }
 catch
 {
-    Write-Host "$($UTF.CrossMark) Exception occurred generating the '$Name' Backup: $(Get-ExceptionDetails $_)" -ForegroundColor Red
+    Write-Host "$( $UTF.CrossMark ) Exception occurred generating the '$Name' Backup: $( Get-ExceptionDetails $_ )" -ForegroundColor Red
     return $Global:STATUS_FAILURE
 }

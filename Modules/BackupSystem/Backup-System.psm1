@@ -61,7 +61,7 @@ function Start-BackupSystem
             }
             if ($null -ne $configParameters)
             {
-                $hashtableParameters = @{}
+                $hashtableParameters = @{ }
                 foreach ($key in $configParameters.PSObject.Properties.Name)
                 {
                     $hashtableParameters[$key] = $configParameters.$key
@@ -76,18 +76,21 @@ function Start-BackupSystem
                 throw "Error executing the '$name' Backup '$dateString' process (Exit Code: $exitCode)"
             }
 
-            Write-Host "$($UTF.HeavyCheckMark) '$name' Backup '$dateString' process completed successfully.`n" -ForegroundColor Green
+            Write-Host "$( $UTF.HeavyCheckMark ) '$name' Backup '$dateString' process completed successfully.`n" -ForegroundColor Green
         }
         catch
         {
-            Write-Host "$($UTF.CrossMark) Exception occurred in '$name' Backup '$dateString' process script execution: $(Get-ExceptionDetails $_)`n" -ForegroundColor Red
+            Write-Host "$( $UTF.CrossMark ) Exception occurred in '$name' Backup '$dateString' process script execution: $( Get-ExceptionDetails $_ )`n" -ForegroundColor Red
             $failedBackups++
         }
     }
-    if ($failedBackups -gt 0) {
-        Write-Host "$($UTF.WarningSign) WARNING: $failedBackups Backup '$dateString' processes failed.`n" -ForegroundColor Red
-    } else {
-        Write-Host "$($UTF.HeavyCheckMark) All Backup '$dateString' processes completed successfully!`n" -ForegroundColor Green
+    if ($failedBackups -gt 0)
+    {
+        Write-Host "$( $UTF.WarningSign ) WARNING: $failedBackups Backup '$dateString' processes failed.`n" -ForegroundColor Red
+    }
+    else
+    {
+        Write-Host "$( $UTF.HeavyCheckMark ) All Backup '$dateString' processes completed successfully!`n" -ForegroundColor Green
     }
 
     Write-Host "Returning to main menu...`n"
@@ -121,7 +124,7 @@ function Start-RestoreSystem
     $selectedIndex = Write-SelectionList -Options $BackupFolderNames
     $backupFolderName = $BackupFolderNames[$selectedIndex]
 
-    Write-Host "$($UTF.Pushpin) Backup '$backupFolderName' selected to be Restored!" -ForegroundColor White
+    Write-Host "$( $UTF.Pushpin ) Backup '$backupFolderName' selected to be Restored!" -ForegroundColor White
 
     # Define the backup location with selected date included.
     $backupsLocationWithDate = "$BackupsLocation\$backupFolderName"
@@ -157,7 +160,7 @@ function Start-RestoreSystem
 
             if ($null -ne $configParameters)
             {
-                $hashtableParameters = @{}
+                $hashtableParameters = @{ }
                 foreach ($key in $configParameters.PSObject.Properties.Name)
                 {
                     $hashtableParameters[$key] = $configParameters.$key
@@ -172,18 +175,21 @@ function Start-RestoreSystem
                 throw "Error executing the '$name' Restore Backup '$backupFolderName' process (Exit Code: $exitCode)"
             }
 
-            Write-Host "$($UTF.HeavyCheckMark) '$name' Restore Backup '$backupFolderName' process completed successfully." -ForegroundColor Green
+            Write-Host "$( $UTF.HeavyCheckMark ) '$name' Restore Backup '$backupFolderName' process completed successfully." -ForegroundColor Green
         }
         catch
         {
-            Write-Host "$($UTF.CrossMark) Exception occurred in '$name' Restore Backup '$backupFolderName' process script execution: $(Get-ExceptionDetails $_)" -ForegroundColor Red
+            Write-Host "$( $UTF.CrossMark ) Exception occurred in '$name' Restore Backup '$backupFolderName' process script execution: $( Get-ExceptionDetails $_ )" -ForegroundColor Red
             $failedBackups++
         }
     }
-    if ($failedBackups -gt 0) {
-        Write-Host "$($UTF.WarningSign) WARNING: $failedBackups Restore Backup '$backupFolderName' processes failed.`n" -ForegroundColor Red
-    } else {
-        Write-Host "$($UTF.HeavyCheckMark) All Restore Backup '$backupFolderName' processes completed successfully!`n" -ForegroundColor Green
+    if ($failedBackups -gt 0)
+    {
+        Write-Host "$( $UTF.WarningSign ) WARNING: $failedBackups Restore Backup '$backupFolderName' processes failed.`n" -ForegroundColor Red
+    }
+    else
+    {
+        Write-Host "$( $UTF.HeavyCheckMark ) All Restore Backup '$backupFolderName' processes completed successfully!`n" -ForegroundColor Green
     }
 
     Write-Host "Returning to main menu...`n"

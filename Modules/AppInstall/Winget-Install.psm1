@@ -26,7 +26,7 @@ function Start-WingetInstallation
 
     [string]$postInstallScriptPath = $Config.'post-install-script-path'
     [bool]$postInstallScriptRequiresAdmin = $Config.'post-install-script-requires-admin'
-    if ( $null -eq $postInstallScriptPath -or $postInstallScriptPath.Length -eq 0 )
+    if ($null -eq $postInstallScriptPath -or $postInstallScriptPath.Length -eq 0)
     {
         return $Global:STATUS_SUCCESS
     }
@@ -55,7 +55,7 @@ function Start-WinStoreInstallation
 
     [string]$postInstallScriptPath = $Config.'post-install-script-path'
     [bool]$postInstallScriptRequiresAdmin = $Config.'post-install-script-requires-admin'
-    if ( $null -eq $postInstallScriptPath -or $postInstallScriptPath.Length -eq 0 )
+    if ($null -eq $postInstallScriptPath -or $postInstallScriptPath.Length -eq 0)
     {
         return $Global:STATUS_SUCCESS
     }
@@ -66,27 +66,32 @@ function Start-WinStoreInstallation
 }
 
 # Validate if the package is installed.
-function Get-IsWingetPackageInstalled {
+function Get-IsWingetPackageInstalled
+{
     param (
         [string]$PackageID,
         [string]$PackageAlias
     )
 
     # Get list of installed packages from winget.
-    $installedPackages = winget list --id $PackageID 2>$null
+    $installedPackages = winget list --id $PackageID 2> $null
 
     # Check if the package appears in the installed list.
-    if ($installedPackages -match $PackageID) {
-        Write-Host "$($UTF.HeavyCheckMark) Package '$PackageAlias' of ID '$PackageID' is already installed." -ForegroundColor Green
+    if ($installedPackages -match $PackageID)
+    {
+        Write-Host "$( $UTF.HeavyCheckMark ) Package '$PackageAlias' of ID '$PackageID' is already installed." -ForegroundColor Green
         return $true
-    } else {
-        Write-Host "$($UTF.CrossMark) Package '$PackageAlias' of ID '$PackageID' is NOT installed." -ForegroundColor DarkMagenta
+    }
+    else
+    {
+        Write-Host "$( $UTF.CrossMark ) Package '$PackageAlias' of ID '$PackageID' is NOT installed." -ForegroundColor DarkMagenta
         return $false
     }
 }
 
 # Install a winget package.
-function Start-InstallWingetPackage {
+function Start-InstallWingetPackage
+{
     param (
         [string]$PackageID,
         [string]$PackageAlias,
@@ -94,58 +99,76 @@ function Start-InstallWingetPackage {
         [bool]$Silent
     )
 
-    try {
+    try
+    {
         Write-Host "Validating if '$PackageAlias' is already installed..."
-        if (Get-IsWingetPackageInstalled -PackageID $PackageID -PackageAlias $PackageAlias){
+        if (Get-IsWingetPackageInstalled -PackageID $PackageID -PackageAlias $PackageAlias)
+        {
             return $Global:STATUS_SUCCESS
         }
 
-        Write-Host "$($UTF.HourGlass) Installing package '$PackageAlias'..." -ForegroundColor Yellow
-        [string]$silentParameter = if ($Silent) { "--silent" } else { "--silent" }
+        Write-Host "$( $UTF.HourGlass ) Installing package '$PackageAlias'..." -ForegroundColor Yellow
+        [string]$silentParameter = if ($Silent)
+        {
+            "--silent"
+        }
+        else
+        {
+            "--silent"
+        }
         $process = Start-Process -FilePath "winget" -ArgumentList "install -e --id $PackageID $silentParameter $ExtraParameters" -NoNewWindow -PassThru -Wait
         $process.WaitForExit()
 
         # Check the last exit code.
-        if ($process.ExitCode -eq 0) {
-            Write-Host "$($UTF.HeavyCheckMark) Package '$PackageAlias' of ID '$PackageID' in NOW installed." -ForegroundColor Green
+        if ($process.ExitCode -eq 0)
+        {
+            Write-Host "$( $UTF.HeavyCheckMark ) Package '$PackageAlias' of ID '$PackageID' in NOW installed." -ForegroundColor Green
             return $Global:STATUS_SUCCESS
         }
 
-        Write-Host "$($UTF.CrossMark) Error installing '$PackageAlias' by winget (Exit Code: $($process.ExitCode))" -ForegroundColor Red
+        Write-Host "$( $UTF.CrossMark ) Error installing '$PackageAlias' by winget (Exit Code: $( $process.ExitCode ))" -ForegroundColor Red
         return $process.ExitCode
-    } catch {
-        Write-Host "$($UTF.CrossMark) Exception occurred in '$PackageAlias' winget installation: $(Get-ExceptionDetails $_)" -ForegroundColor Red
+    }
+    catch
+    {
+        Write-Host "$( $UTF.CrossMark ) Exception occurred in '$PackageAlias' winget installation: $( Get-ExceptionDetails $_ )" -ForegroundColor Red
         return $Global:STATUS_FAILURE
     }
 }
 
 # Install a windows store package by winget.
-function Start-InstallWinStorePackage {
+function Start-InstallWinStorePackage
+{
     param (
         [string]$PackageID,
         [string]$PackageAlias
     )
 
-    try {
+    try
+    {
         Write-Host "Validating if '$PackageAlias' is already installed..."
-        if (Get-IsWingetPackageInstalled -PackageID $PackageID -PackageAlias $PackageAlias){
+        if (Get-IsWingetPackageInstalled -PackageID $PackageID -PackageAlias $PackageAlias)
+        {
             return $Global:STATUS_SUCCESS
         }
 
-        Write-Host "$($UTF.HourGlass) Installing windoes store package '$PackageAlias'..." -ForegroundColor Yellow
+        Write-Host "$( $UTF.HourGlass ) Installing windoes store package '$PackageAlias'..." -ForegroundColor Yellow
         $process = Start-Process -FilePath "winget" -ArgumentList "install --id $PackageID --source msstore --accept-package-agreements" -NoNewWindow -PassThru -Wait
         $process.WaitForExit()
 
         # Check the last exit code.
-        if ($process.ExitCode -eq 0) {
-            Write-Host "$($UTF.HeavyCheckMark) Package '$PackageAlias' of ID '$PackageID' in NOW installed." -ForegroundColor Green
+        if ($process.ExitCode -eq 0)
+        {
+            Write-Host "$( $UTF.HeavyCheckMark ) Package '$PackageAlias' of ID '$PackageID' in NOW installed." -ForegroundColor Green
             return $Global:STATUS_SUCCESS
         }
 
-        Write-Host "$($UTF.CrossMark) Error installing windows store package '$PackageAlias' by winget (Exit Code: $($process.ExitCode))" -ForegroundColor Red
+        Write-Host "$( $UTF.CrossMark ) Error installing windows store package '$PackageAlias' by winget (Exit Code: $( $process.ExitCode ))" -ForegroundColor Red
         return $process.ExitCode
-    } catch {
-        Write-Host "$($UTF.CrossMark) Exception occurred in '$PackageAlias' windows store installation by winget: $(Get-ExceptionDetails $_)" -ForegroundColor Red
+    }
+    catch
+    {
+        Write-Host "$( $UTF.CrossMark ) Exception occurred in '$PackageAlias' windows store installation by winget: $( Get-ExceptionDetails $_ )" -ForegroundColor Red
         return $Global:STATUS_FAILURE
     }
 }
@@ -159,20 +182,24 @@ function Start-PostInstallationScript
         [bool]$RequiresAdmin
     )
 
-    try {
-        Write-Host "$($UTF.HourGlass) Starting package '$PackageAlias' post install script..." -ForegroundColor Yellow
+    try
+    {
+        Write-Host "$( $UTF.HourGlass ) Starting package '$PackageAlias' post install script..." -ForegroundColor Yellow
         [int]$exitCode = Invoke-ScriptWithCorrectPermissions -ScriptPath "$ScriptDir$ScriptPath" -RequiresAdmin $RequiresAdmin
 
         # Check the last exit code.
-        if ($exitCode -eq $Global:STATUS_SUCCESS) {
-            Write-Host "$($UTF.HeavyCheckMark) Package '$PackageAlias' post install script completed successfully." -ForegroundColor Green
+        if ($exitCode -eq $Global:STATUS_SUCCESS)
+        {
+            Write-Host "$( $UTF.HeavyCheckMark ) Package '$PackageAlias' post install script completed successfully." -ForegroundColor Green
             return $Global:STATUS_SUCCESS
         }
 
-        Write-Host "$($UTF.CrossMark) Error executing package '$PackageAlias' post install script (Exit Code: $exitCode)" -ForegroundColor Red
+        Write-Host "$( $UTF.CrossMark ) Error executing package '$PackageAlias' post install script (Exit Code: $exitCode)" -ForegroundColor Red
         return $process.ExitCode
-    } catch {
-        Write-Host "$($UTF.CrossMark) Exception occurred in package '$PackageAlias' post install script execution: $(Get-ExceptionDetails $_)" -ForegroundColor Red
+    }
+    catch
+    {
+        Write-Host "$( $UTF.CrossMark ) Exception occurred in package '$PackageAlias' post install script execution: $( Get-ExceptionDetails $_ )" -ForegroundColor Red
         return $Global:STATUS_FAILURE
     }
 }

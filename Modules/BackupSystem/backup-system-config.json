@@ -29,7 +29,9 @@
       "restore-requires-admin": false,
       "backup-location-name": "EnvVariablesBackup.txt",
       "extra-parameters": {
-        "env-vars" : [ "GIT_SSH" ]
+        "env-vars": [
+          "GIT_SSH"
+        ]
       }
     },
     {
@@ -52,7 +54,7 @@
       "restore-requires-admin": false,
       "backup-location-name": "ImportantFilesBackup",
       "extra-parameters": {
-        "paths-to-backup" : [
+        "paths-to-backup": [
           "$env:USERPROFILE/OneDrive/Documents/FromSoftware",
           "$env:USERPROFILE/OneDrive/Documents/My Games",
           "$env:USERPROFILE/OneDrive/Documents/NBGI",

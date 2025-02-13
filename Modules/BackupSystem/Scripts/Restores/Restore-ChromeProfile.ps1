@@ -16,7 +16,8 @@ $ChromeProfilePath = "$env:LOCALAPPDATA\Google\Chrome\User Data"
 try
 {
     # Ensure the backup directory exists.
-    if (!(Test-Path $BackupLocation)) {
+    if (!(Test-Path $BackupLocation))
+    {
         Write-Host "Backup not found in path '$BackupLocation'!" -ForegroundColor Red
         return $Global:STATUS_FAILURE
     }
@@ -47,11 +48,11 @@ try
     # Restore Chrome profile.
     robocopy $BackupLocation $ChromeProfilePath /E /R:1 /W:1
 
-    Write-Host "$($UTF.CheckMark) '$Name' Backup Restore completed!" -ForegroundColor Green
+    Write-Host "$( $UTF.CheckMark ) '$Name' Backup Restore completed!" -ForegroundColor Green
     return $Global:STATUS_SUCCESS
 }
 catch
 {
-    Write-Host "$($UTF.CrossMark) Exception occurred Recovering the '$Name' Backup: $(Get-ExceptionDetails $_)" -ForegroundColor Red
+    Write-Host "$( $UTF.CrossMark ) Exception occurred Recovering the '$Name' Backup: $( Get-ExceptionDetails $_ )" -ForegroundColor Red
     return $Global:STATUS_FAILURE
 }

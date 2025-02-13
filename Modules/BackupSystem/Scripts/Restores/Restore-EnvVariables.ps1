@@ -1,7 +1,7 @@
 param (
     [string]$BackupLocation,
     [string]$Name,
-    [hashtable]$ExtraParameters = @{}
+    [hashtable]$ExtraParameters = @{ }
 )
 
 # Get full script path even if $PSScriptRoot is't set.
@@ -14,7 +14,8 @@ Import-Module "$ScriptDir\..\..\..\Core.psm1"
 try
 {
     # Ensure the backup directory exists.
-    if (!(Test-Path $BackupLocation)) {
+    if (!(Test-Path $BackupLocation))
+    {
         Write-Host "Backup not found in path '$BackupLocation'!" -ForegroundColor Red
         return $Global:STATUS_FAILURE
     }
@@ -33,11 +34,11 @@ try
 
     Restart-Explorer
 
-    Write-Host "$($UTF.CheckMark) '$Name' Backup Restore completed!" -ForegroundColor Green
+    Write-Host "$( $UTF.CheckMark ) '$Name' Backup Restore completed!" -ForegroundColor Green
     return $Global:STATUS_SUCCESS
 }
 catch
 {
-    Write-Host "$($UTF.CrossMark) Exception occurred Recovering the '$Name' Backup: $(Get-ExceptionDetails $_)" -ForegroundColor Red
+    Write-Host "$( $UTF.CrossMark ) Exception occurred Recovering the '$Name' Backup: $( Get-ExceptionDetails $_ )" -ForegroundColor Red
     return $Global:STATUS_FAILURE
 }

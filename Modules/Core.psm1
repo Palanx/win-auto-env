@@ -19,16 +19,18 @@ function Restart-Explorer
     Start-Process -FilePath explorer.exe
 
     # Wait for Explorer to be fully initialized
-    do {
+    do
+    {
         Start-Sleep -Milliseconds 500
         $explorerRunning = Get-Process -Name explorer -ErrorAction SilentlyContinue
     } while (-not $explorerRunning)
 
-    Write-Host "$($UTF.CheckMark) Explorer restarted successfully." -ForegroundColor Green
+    Write-Host "$( $UTF.CheckMark ) Explorer restarted successfully." -ForegroundColor Green
 }
 
 # Get if the current PowerShell session has administrator privileges.
-function Get-IsAdmin {
+function Get-IsAdmin
+{
     $currentUser = [System.Security.Principal.WindowsIdentity]::GetCurrent()
     $principal = New-Object System.Security.Principal.WindowsPrincipal($currentUser)
     return $principal.IsInRole([System.Security.Principal.WindowsBuiltInRole]::Administrator)
@@ -39,7 +41,7 @@ function Invoke-ScriptWithCorrectPermissions
 {
     param (
         [string]$ScriptPath,
-        [hashtable]$ExtraParameters = @{},
+        [hashtable]$ExtraParameters = @{ },
         [bool]$RequiresAdmin = $false
     )
 
@@ -66,15 +68,23 @@ function Invoke-ScriptWithCorrectPermissions
 }
 
 # Run a script as Admin or User.
-function Invoke-ScriptAs {
+function Invoke-ScriptAs
+{
     param (
         [bool]$asAdmin,
         [string]$ScriptPath,
-        [hashtable]$ExtraParameters = @{}
+        [hashtable]$ExtraParameters = @{ }
     )
 
     # Define the role text.
-    if ($asAdmin) {$role = "Admin" } else {$role = "User" }
+    if ($asAdmin)
+    {
+        $role = "Admin"
+    }
+    else
+    {
+        $role = "User"
+    }
 
     Write-Host "Executing script as $role in new shell..." -ForegroundColor DarkMagenta
 
@@ -82,7 +92,7 @@ function Invoke-ScriptAs {
     $tempFile = [System.IO.Path]::GetTempFileName()
 
     # Convert hashtable to a formatted string for PowerShell.
-    $extraParamsString = ($ExtraParameters.GetEnumerator() | ForEach-Object { "-$($_.Key) '$($_.Value)'" }) -join " "
+    $extraParamsString = ($ExtraParameters.GetEnumerator() | ForEach-Object { "-$( $_.Key ) '$( $_.Value )'" }) -join " "
 
     # Build the PowerShell command to execute and return the exit code in a shell.
     $command = @"
@@ -106,7 +116,8 @@ Read-Host
     # Get the exit code stored in the temp file.
     $exitCode = Get-Content $tempFile -Raw
     # Fallback in cases where exit code isn't returned because of an exception.
-    if (!([int]::TryParse($exitCode, [ref]$null))){
+    if (!([int]::TryParse($exitCode, [ref]$null)))
+    {
         $exitCode = $Global:STATUS_FAILURE
     }
 
@@ -118,9 +129,10 @@ Read-Host
     return $exitCode
 }
 
-function Get-ExceptionDetails {
+function Get-ExceptionDetails
+{
     param (
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory = $true)]
         [System.Management.Automation.ErrorRecord]$ErrorRecord
     )
 
@@ -132,10 +144,10 @@ function Get-ExceptionDetails {
 
     # Format the error message
     $errorDetails = @"
-$($UTF.AngerSymbol) ERROR: $errorMessage
-$($UTF.OpenFileFolder) Script Name: $scriptName
-$($UTF.MagnifyingGlass) Error at Line: $lineNumber
-$($UTF.Pushpin) Stack Trace:
+$( $UTF.AngerSymbol ) ERROR: $errorMessage
+    $( $UTF.OpenFileFolder ) Script Name: $scriptName
+    $( $UTF.MagnifyingGlass ) Error at Line: $lineNumber
+    $( $UTF.Pushpin ) Stack Trace:
 $scriptStackTrace
 "@
 
@@ -143,10 +155,11 @@ $scriptStackTrace
 }
 
 # Register a ProgID.
-function Register-ProgID {
+function Register-ProgID
+{
     param (
-        [string]$ProgID,        # e.g. "MyApp.Document.1"
-        [string]$ProgramName,   # e.g. "My App"
+        [string]$ProgID, # e.g. "MyApp.Document.1"
+        [string]$ProgramName, # e.g. "My App"
         [string]$AppPath        # e.g. "C:\Path\To\YourApp.exe"
     )
 
@@ -156,8 +169,9 @@ function Register-ProgID {
     try
     {
         # Ensure the path exists.
-        if (Test-Path $registryPath) {
-            Write-Host "$($UTF.CheckMark) ProgID '$ProgID' is already registered. Skipping registration." -ForegroundColor Green
+        if (Test-Path $registryPath)
+        {
+            Write-Host "$( $UTF.CheckMark ) ProgID '$ProgID' is already registered. Skipping registration." -ForegroundColor Green
             return $Global:STATUS_SUCCESS
         }
 
@@ -176,7 +190,7 @@ function Register-ProgID {
     }
     catch
     {
-        Write-Host "$($UTF.CrossMark) Exception occurred registering the ProgID '$ProgID': $(Get-ExceptionDetails $_)" -ForegroundColor Red
+        Write-Host "$( $UTF.CrossMark ) Exception occurred registering the ProgID '$ProgID': $( Get-ExceptionDetails $_ )" -ForegroundColor Red
         return $Global:STATUS_FAILURE
     }
 }

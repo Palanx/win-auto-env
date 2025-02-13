@@ -40,7 +40,8 @@ function Write-SelectionList
     )
 
     # Write a CLI GUI List with selected value.
-    function Write-List {
+    function Write-List
+    {
         param (
             [bool]$MustResetCursorPosition = $false
         )
@@ -52,10 +53,13 @@ function Write-SelectionList
         }
 
         for ($i = 0; $i -lt $Options.Length; $i++) {
-            if ($i -eq $selectedIndex) {
-                Write-Host "$($UTF.JapaneseGoblin)$($Options[$i])" -ForegroundColor $SelectedOptionsColor
-            } else {
-                Write-Host "  $($Options[$i])" -ForegroundColor $OptionsColor
+            if ($i -eq $selectedIndex)
+            {
+                Write-Host "$( $UTF.JapaneseGoblin )$( $Options[$i] )" -ForegroundColor $SelectedOptionsColor
+            }
+            else
+            {
+                Write-Host "  $( $Options[$i] )" -ForegroundColor $OptionsColor
             }
         }
     }
@@ -71,12 +75,13 @@ function Write-SelectionList
     # Main loop to handle input.
     $mustExit = $false
     Write-List
-    do {
+    do
+    {
         # Capture key press.
         $keyInfo = [System.Console]::ReadKey($true)
         switch ($keyInfo.Key)
         {
-            $([System.ConsoleKey]::UpArrow)
+            $( [System.ConsoleKey]::UpArrow )
             {
                 if ($selectedIndex -gt 0)
                 {
@@ -84,7 +89,7 @@ function Write-SelectionList
                 }
                 Write-List -MustResetCursorPosition $true
             }
-            $([System.ConsoleKey]::DownArrow)
+            $( [System.ConsoleKey]::DownArrow )
             {
                 if ($selectedIndex -lt ($Options.Length - 1))
                 {
@@ -92,7 +97,9 @@ function Write-SelectionList
                 }
                 Write-List -MustResetCursorPosition $true
             }
-            $([System.ConsoleKey]::Enter) { $mustExit = $true }
+            $( [System.ConsoleKey]::Enter ) {
+                $mustExit = $true
+            }
         }
     } while (!$mustExit)
 

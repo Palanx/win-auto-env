@@ -36,16 +36,24 @@ do
 {
     Write-Header -Title "Win Auto Environment"
 
-    Write-Host "$($UTF.StartBold)$($UTF.Red)$($UTF.Death)$($UTF.ResetColor) $($UTF.StartBold)Environment Owner:$($UTF.StopStyles) $OwnerName"
-    Write-Host "$($UTF.StartBold)$($UTF.Red)$($UTF.Death)$($UTF.ResetColor) $($UTF.StartBold)Environment Device:$($UTF.StopStyles) $DeviceName`n"
+    Write-Host "$( $UTF.StartBold )$( $UTF.Red )$( $UTF.Death )$( $UTF.ResetColor ) $( $UTF.StartBold )Environment Owner:$( $UTF.StopStyles ) $OwnerName"
+    Write-Host "$( $UTF.StartBold )$( $UTF.Red )$( $UTF.Death )$( $UTF.ResetColor ) $( $UTF.StartBold )Environment Device:$( $UTF.StopStyles ) $DeviceName`n"
 
     $selectedIndex = Write-SelectionList -Options $Options
     switch ($Options[$selectedIndex])
     {
-        $BuckupSystemOption { Start-BackupSystem }
-        $RestoreSystemOption { Start-RestoreSystem }
-        $AppInstallOption { Start-AppInstall }
-        $ExitOption { $mustExit = $true }
+        $BuckupSystemOption {
+            Start-BackupSystem
+        }
+        $RestoreSystemOption {
+            Start-RestoreSystem
+        }
+        $AppInstallOption {
+            Start-AppInstall
+        }
+        $ExitOption {
+            $mustExit = $true
+        }
     }
 } while (!$mustExit)
 

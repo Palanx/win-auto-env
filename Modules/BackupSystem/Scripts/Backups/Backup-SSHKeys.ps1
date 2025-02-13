@@ -16,7 +16,8 @@ $SSHPath = "$env:USERPROFILE\.ssh"
 try
 {
     # Ensure the backup directory exists.
-    if (!(Test-Path $BackupLocation)) {
+    if (!(Test-Path $BackupLocation))
+    {
         New-Item -ItemType Directory -Path $BackupLocation -Force
     }
 
@@ -28,15 +29,15 @@ try
     }
     else
     {
-        Write-Host "$($UTF.CrossMark) Path '$SSHPath' for SSH Keys doesn't exist." -ForegroundColor Red
+        Write-Host "$( $UTF.CrossMark ) Path '$SSHPath' for SSH Keys doesn't exist." -ForegroundColor Red
         return $Global:STATUS_FAILURE
     }
 
-    Write-Host "$($UTF.CheckMark) '$Name' Backup completed! Saved to: '$BackupLocation'" -ForegroundColor Green
+    Write-Host "$( $UTF.CheckMark ) '$Name' Backup completed! Saved to: '$BackupLocation'" -ForegroundColor Green
     return $Global:STATUS_SUCCESS
 }
 catch
 {
-    Write-Host "$($UTF.CrossMark) Exception occurred generating the '$Name' Backup: $(Get-ExceptionDetails $_)" -ForegroundColor Red
+    Write-Host "$( $UTF.CrossMark ) Exception occurred generating the '$Name' Backup: $( Get-ExceptionDetails $_ )" -ForegroundColor Red
     return $Global:STATUS_FAILURE
 }

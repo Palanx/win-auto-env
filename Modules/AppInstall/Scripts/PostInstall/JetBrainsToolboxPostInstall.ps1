@@ -9,17 +9,22 @@ Import-Module "$ScriptDir\..\..\..\Core.psm1"
 $ToolboxSettingsPath = "$env:LOCALAPPDATA\JetBrains\Toolbox\.settings.json"
 $CustomInstallPath = "D:\Program Files\JetBrains\Toolbox"
 
-try {
+try
+{
     # Run the Toolbox for first time to generate the settings file.
     Start-Process -FilePath "$env:LOCALAPPDATA\JetBrains\Toolbox\bin\jetbrains-toolbox.exe"
 
     # Ensure Toolbox settings file exists.
-    if (!(Test-Path $ToolboxSettingsPath)) {
+    if (!(Test-Path $ToolboxSettingsPath))
+    {
         throw "Toolbox settings file not found. Ensure Toolbox has been opened at least once."
         return $Global:STATUS_FAILURE
-    } else {
+    }
+    else
+    {
         # Ensure the directory exists.
-        if (!(Test-Path $CustomInstallPath)) {
+        if (!(Test-Path $CustomInstallPath))
+        {
             New-Item -ItemType Directory -Path $CustomInstallPath -Force
         }
 
@@ -38,10 +43,12 @@ try {
         Write-Host "Restarting JetBrains Toolbox..." -ForegroundColor DarkMagenta
         Start-Process -FilePath "$env:LOCALAPPDATA\JetBrains\Toolbox\bin\jetbrains-toolbox.exe"
 
-        Write-Host "$($UTF.CheckMark) JetBrains Toolbox setup completed successfully!" -ForegroundColor Green
+        Write-Host "$( $UTF.CheckMark ) JetBrains Toolbox setup completed successfully!" -ForegroundColor Green
         return $Global:STATUS_SUCCESS
     }
-} catch {
-    Write-Host "$($UTF.CrossMark) Exception occurred in JetBrains Toolbox setup: $(Get-ExceptionDetails $_)" -ForegroundColor Red
+}
+catch
+{
+    Write-Host "$( $UTF.CrossMark ) Exception occurred in JetBrains Toolbox setup: $( Get-ExceptionDetails $_ )" -ForegroundColor Red
     return $Global:STATUS_FAILURE
 }
