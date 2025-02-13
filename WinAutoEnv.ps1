@@ -20,6 +20,8 @@ $SystemConfigPath = "$ScriptDir\system-config.json"
 
 # Read JSON file and convert to PowerShell object.
 $SystemConfigData = Get-Content -Path $SystemConfigPath -Raw | ConvertFrom-Json
+$OwnerName = $SystemConfigData.owner
+$DeviceName = $SystemConfigData.device
 
 # Define Options and their Handlers.
 $BuckupSystemOption = "Backup System"
@@ -33,6 +35,9 @@ $mustExit = $false
 do
 {
     Write-Header -Title "Win Auto Environment"
+
+    Write-Host "$($UTF.StartBold)$($UTF.Red)$($UTF.Death)$($UTF.ResetColor) $($UTF.StartBold)Environment Owner:$($UTF.StopStyles) $OwnerName"
+    Write-Host "$($UTF.StartBold)$($UTF.Red)$($UTF.Death)$($UTF.ResetColor) $($UTF.StartBold)Environment Device:$($UTF.StopStyles) $DeviceName`n"
 
     $selectedIndex = Write-SelectionList -Options $Options
     switch ($Options[$selectedIndex])

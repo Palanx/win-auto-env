@@ -15,11 +15,19 @@ $UTF = @{
     MagnifyingGlass = [char]::ConvertFromUtf32(0x0001F50D) # 🔍
     OpenFileFolder  = [char]::ConvertFromUtf32(0x0001F4C2) # 📂
     Pushpin         = [char]::ConvertFromUtf32(0x0001F4CC) # 📌
+    Death           = [char]::ConvertFromUtf32(0x00006B7B) # 死
 
     # Font Styles
     StartBold       = "$([char]27)[1m"
     StartUnderline  = "$([char]27)[4m"
     StopStyles      = "$([char]27)[0m"
+
+    # Colors
+    Red             = "$([char]27)[31m"
+    Green           = "$([char]27)[32m"
+    Yellow          = "$([char]27)[33m"
+    Blue            = "$([char]27)[34m"
+    ResetColor      = "$([char]27)[0m"
 }
 
 $null = $UTF  # This tricks PowerShell into thinking the variable is used.
