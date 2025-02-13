@@ -21,10 +21,12 @@ try
         New-Item -ItemType Directory -Path $BackupLocation -Force
     }
 
+    $isBackupCreated = $false;
     # Backup profile script.
     if (Test-Path $ProfilePath) {
         Copy-Item -Path $ProfilePath -Destination "$BackupLocation\Microsoft.PowerShell_profile.ps1" -Force
         Write-Host "$($UTF.CheckMark) PowerShell profile backed up successfully." -ForegroundColor DarkGreen
+        $isBackupCreated = $true;
     } else {
         Write-Host "$($UTF.WarningSign) PowerShell profile not found!" -ForegroundColor DarkRed
     }
@@ -33,12 +35,19 @@ try
     if (Test-Path $ModulesPath) {
         robocopy $ModulesPath "$BackupLocation\Modules" /E /R:1 /W:1
         Write-Host "$($UTF.CheckMark) PowerShell modules backed up successfully." -ForegroundColor DarkGreen
+        $isBackupCreated = $true;
     } else {
         Write-Host "$($UTF.WarningSign) Custom PowerShell modules not found!" -ForegroundColor DarkRed
     }
 
-    # If a PowerShell profile and module weren't found, it's intended to return success, because there is nothing to backup.
-    Write-Host "$($UTF.CheckMark) '$Name' Backup completed! Saved to: '$BackupLocation'" -ForegroundColor Green
+    if ( !$isBackupCreated )
+    {
+        Write-Host "$($UTF.WarningSign) No PowerShell profile or module to backup." -ForegroundColor Green
+    }
+    else
+    {
+        Write-Host "$($UTF.CheckMark) '$Name' Backup completed! Saved to: '$BackupLocation'" -ForegroundColor Green
+    }
     return $Global:STATUS_SUCCESS
 }
 catch

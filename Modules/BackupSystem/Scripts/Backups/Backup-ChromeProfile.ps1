@@ -25,6 +25,20 @@ try
     if (Test-Path $ChromeProfilePath)
     {
         robocopy $ChromeProfilePath $BackupLocation /E /XD "Cache" "Code Cache" "Service Worker" /R:1 /W:1
+
+        # Backup Chrome profile excluding cache
+        robocopy $ChromeProfilePath $BackupLocation /E /XD "Cache" "Code Cache" "Service Worker" /R:1 /W:1
+
+        # Ensure session files are included
+        $sessionBackupPath = "$BackupLocation\Default\Sessions"
+        if (!(Test-Path $sessionBackupPath)) {
+            New-Item -ItemType Directory -Path $sessionBackupPath -Force
+        }
+
+        Copy-Item "$ChromeProfilePath\Default\Current Session" $BackupLocation\Default\ -Force
+        Copy-Item "$ChromeProfilePath\Default\Current Tabs" $BackupLocation\Default\ -Force
+        Copy-Item "$ChromeProfilePath\Default\Last Session" $BackupLocation\Default\ -Force
+        Copy-Item "$ChromeProfilePath\Default\Last Tabs" $BackupLocation\Default\ -Force
     }
     else
     {

@@ -23,29 +23,51 @@ try
         return $Global:STATUS_FAILURE
     }
 
-    # Ensure the Registry Backup path exist.
-    if (!$(Test-Path $RegistryBackup)) {
-        Write-Host "No Registry Backup in '$RegistryBackup' found!"
-        return $Global:STATUS_FAILURE
-    }
-
     Write-Host "Restoring '$Name'..."
 
-    # Restore Quick Access files
+    $isBackupRestored = $false;
+    # Restore Quick Access files.
     if (Test-Path "$BackupLocation\AutomaticDestinations") {
         robocopy "$BackupLocation\AutomaticDestinations" $QuickAccessPath1 /E /R:1 /W:1
+        Write-Host "$($UTF.CheckMark) Automatic Destinations restored successfully." -ForegroundColor DarkGreen
+        $isBackupRestored = $true;
+    }
+    else
+    {
+        Write-Host "$($UTF.WarningSign) No Automatic Destinations backup found!" -ForegroundColor DarkRed
     }
     if (Test-Path "$BackupLocation\CustomDestinations") {
         robocopy "$BackupLocation\CustomDestinations" $QuickAccessPath2 /E /R:1 /W:1
+        Write-Host "$($UTF.CheckMark) Custom Destinations restored successfully." -ForegroundColor DarkGreen
+        $isBackupRestored = $true;
+    }
+    else
+    {
+        Write-Host "$($UTF.WarningSign) No Custom Destinations backup found!" -ForegroundColor DarkRed
     }
 
     # Restore Registry settings.
-    reg import $RegistryBackup
-    Write-Host "Registry settings restored."
+    if (Test-Path $RegistryBackup) {
+        reg import $RegistryBackup
+        Write-Host "$($UTF.CheckMark) QuickAccess reg restored successfully." -ForegroundColor DarkGreen
+        $isBackupRestored = $true;
+    }
+    else
+    {
+        Write-Host "$($UTF.WarningSign) No QuickAccess reg Backup found!" -ForegroundColor DarkRed
+    }
 
     Restart-Explorer
 
-    Write-Host "$($UTF.CheckMark) '$Name' Backup Restore completed!" -ForegroundColor Green
+    if ( !$isBackupRestored )
+    {
+        Write-Host "$($UTF.WarningSign) No Automatic/Custom Destinations or 'QuickAccess' reg to Restore." -ForegroundColor Green
+    }
+    else
+    {
+        Restart-Explorer
+        Write-Host "$($UTF.CheckMark) '$Name' Backup Restore completed!" -ForegroundColor Green
+    }
     return $Global:STATUS_SUCCESS
 }
 catch

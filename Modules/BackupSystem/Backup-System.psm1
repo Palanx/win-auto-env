@@ -107,7 +107,7 @@ function Start-RestoreSystem
     }
 
     # Validate if there are buckups.
-    $BackupFolderNames = Get-ChildItem -Path $BackupsLocation -Directory | Select-Object -ExpandProperty Name
+    $BackupFolderNames = @(Get-ChildItem -Path $BackupsLocation -Directory | Select-Object -ExpandProperty Name)
     if ($BackupFolderNames.Count -eq 0)
     {
         Write-Host "There aren't Backups in '$BackupsLocation' to recover." -ForegroundColor Red
@@ -140,7 +140,7 @@ function Start-RestoreSystem
         $configParameters = $backupConfig.'extra-parameters'
         $backupLocationName = $backupConfig.'backup-location-name'
 
-        $infoString = "'$name' Restore Backup '$dateString' process will be executed."
+        $infoString = "'$name' Restore Backup '$backupFolderName' process will be executed."
         Write-Host $infoString -ForegroundColor White
         Write-Separator -Width $infoString.Length
 
@@ -166,7 +166,7 @@ function Start-RestoreSystem
                 $extraParameters['ExtraParameters'] = $hashtableParameters
             }
 
-            $exitCode = Invoke-ScriptWithCorrectPermissions -ScriptPath "$ScriptDir$scriptPath" -ExtraParameters $extraParameters -RequiresAdmin $requiresAdmin | Select-Object -Last 1
+            $exitCode = Invoke-ScriptWithCorrectPermissions -ScriptPath "$ScriptDir$scriptPath" -ExtraParameters $extraParameters -RequiresAdmin $requiresAdmin
             if ($exitCode -ne $Global:STATUS_SUCCESS)
             {
                 throw "Error executing the '$name' Restore Backup '$backupFolderName' process (Exit Code: $exitCode)"

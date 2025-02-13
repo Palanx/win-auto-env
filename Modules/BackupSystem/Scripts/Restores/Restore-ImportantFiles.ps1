@@ -23,6 +23,8 @@ try
 
     Write-Host "Restoring '$Name'..."
 
+    $pathsFound = @()
+    $pathsNotFound = @()
     foreach ($path in $pathsToBackup) {
         # Expand path to recognize env variables.
         $path = $ExecutionContext.InvokeCommand.ExpandString($path)
@@ -35,12 +37,30 @@ try
         if (Test-Path $backupTarget) {
             Write-Host "Restoring: $backupTarget -> $path"
             robocopy $backupTarget $path /E /R:1 /W:1 /XO
+            Write-Host "$($UTF.CheckMark) Path Restore completed: $path" -ForegroundColor Green
+            $pathsFound.Add($path)
         } else {
-            Write-Host "Skipping (backup not found): $backupTarget"
+            Write-Host "$($UTF.CrossMark) Skipping (backup not found): $backupTarget" -ForegroundColor Red
+            $pathsNotFound.Add($path)
         }
     }
 
-    Write-Host "$($UTF.CheckMark) '$Name' Backup Restore completed!" -ForegroundColor Green
+    if ($pathsFound.Count -eq 0)
+    {
+        Write-Host "$($UTF.CrossMark) All paths weren't found for '$Name' Backup Restore" -ForegroundColor Red
+        return $Global:STATUS_FAILURE
+    }
+    elseif ($pathsNotFound.Count -gt 0)
+    {
+        Write-Host "$($UTF.CheckMark) '$Name' Backup Restore completed with some fails!" -ForegroundColor DarkGreen
+        Write-Host "Paths not found: " -ForegroundColor DarkRed
+        $pathsNotFound | Format-Table -AutoSize
+    }
+    else
+    {
+        Write-Host "$($UTF.CheckMark) '$Name' Backup Restore completed!" -ForegroundColor Green
+    }
+
     return $Global:STATUS_SUCCESS
 }
 catch

@@ -30,10 +30,12 @@ try
         New-Item -ItemType Directory -Path $PowerShellProfilePath -Force
     }
 
+    $isBackupRestored = $false;
     # Restore profile script.
     if (Test-Path "$BackupLocation\Microsoft.PowerShell_profile.ps1") {
         Copy-Item -Path "$BackupLocation\Microsoft.PowerShell_profile.ps1" -Destination $ProfilePath -Force
         Write-Host "$($UTF.CheckMark) PowerShell profile restored successfully." -ForegroundColor DarkGreen
+        $isBackupRestored = $true;
     } else {
         Write-Host "$($UTF.WarningSign) No PowerShell profile backup found!" -ForegroundColor DarkRed
     }
@@ -42,12 +44,19 @@ try
     if (Test-Path "$BackupLocation\Modules") {
         robocopy "$BackupLocation\Modules" $ModulesPath /E /R:1 /W:1
         Write-Host "$($UTF.CheckMark) PowerShell modules restored successfully." -ForegroundColor DarkGreen
+        $isBackupRestored = $true;
     } else {
         Write-Host "$($UTF.WarningSign) No PowerShell module backup found!" -ForegroundColor DarkRed
     }
 
-    # If a PowerShell profile and module weren't found, it's intended to return success, because there is nothing to restore.
-    Write-Host "$($UTF.CheckMark) '$Name' Backup Restore completed!" -ForegroundColor Green
+    if ( !$isBackupRestored )
+    {
+        Write-Host "$($UTF.WarningSign) No PowerShell profile or module to Restore." -ForegroundColor Green
+    }
+    else
+    {
+        Write-Host "$($UTF.CheckMark) '$Name' Backup Restore completed!" -ForegroundColor Green
+    }
     return $Global:STATUS_SUCCESS
 }
 catch

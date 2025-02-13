@@ -27,6 +27,8 @@ try
         Remove-Item $BackupLocation -Force
     }
 
+    $envVarsFound = @()
+    $envVarsNotFound = @()
     # Backup each variable
     foreach ($var in $envVars)
     {
@@ -34,15 +36,32 @@ try
         if ($value)
         {
             "$var=$value" | Out-File -Append -FilePath $BackupLocation
-            Write-Host "Var Backed up: $var"
+            Write-Host "$($UTF.CheckMark) Var Backed up: $var" -ForegroundColor Green
+            $envVarsFound.Add($var)
         }
         else
         {
-            Write-Host "Skipping Var: $var (Not found)"
+            Write-Host "$($UTF.CrossMark) Skipping Var: $var (Not found)" -ForegroundColor Red
+            $envVarsNotFound.Add($var)
         }
     }
 
-    Write-Host "$($UTF.CheckMark) '$Name' Backup completed! Saved to: '$BackupLocation'" -ForegroundColor Green
+
+    if ($envVarsFound.Count -eq 0)
+    {
+        Write-Host "$($UTF.CrossMark) All Env Variables weren't found for '$Name' Backup" -ForegroundColor Red
+        return $Global:STATUS_FAILURE
+    }
+    elseif ($envVarsNotFound.Count -gt 0)
+    {
+        Write-Host "$($UTF.CheckMark) '$Name' Backup completed with some fails! Saved to: '$BackupLocation'" -ForegroundColor DarkGreen
+        Write-Host "Env Variables not found: " -ForegroundColor DarkRed
+        $envVarsNotFound | Format-Table -AutoSize
+    }
+    else
+    {
+        WWrite-Host "$($UTF.CheckMark) '$Name' Backup completed! Saved to: '$BackupLocation'" -ForegroundColor Green
+    }
     return $Global:STATUS_SUCCESS
 }
 catch

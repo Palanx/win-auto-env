@@ -86,7 +86,7 @@ function Invoke-ScriptAs {
 
     # Build the PowerShell command to execute and return the exit code in a shell.
     $command = @"
-`$exitCode = & `"$ScriptPath`" $extraParamsString -ExecutionPolicy Bypass -ErrorAction Stop;
+`$exitCode = & `"$ScriptPath`" $extraParamsString -ExecutionPolicy Bypass -ErrorAction Stop | Select-Object -Last 1;
 `$exitCode | Out-File -FilePath `"$tempFile`" -NoNewline;
 Write-Host "Script completed as $role, Press Enter to exit..."
 Read-Host

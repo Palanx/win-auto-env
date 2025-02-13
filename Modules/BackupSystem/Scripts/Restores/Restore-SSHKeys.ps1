@@ -63,12 +63,11 @@ try
                 Write-Host "Added: $($Key.Name)"
             }
         }
-    } else {
-        Write-Host "$($UTF.WarningSign) No private SSH keys found to add." -ForegroundColor DarkRed
-    }
 
-    # If no SSH Keys is found, it's intended to return success, because there is nothing to restore.
-    Write-Host "$($UTF.CheckMark) '$Name' Backup Restore completed!" -ForegroundColor Green
+        Write-Host "$($UTF.CheckMark) '$Name' Backup Restore completed!" -ForegroundColor Green
+    } else {
+        Write-Host "$($UTF.WarningSign) No private SSH keys found to add." -ForegroundColor Green
+    }
     return $Global:STATUS_SUCCESS
 }
 catch

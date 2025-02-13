@@ -28,7 +28,7 @@ try
     }
     else
     {
-        Write-Host "Path '$SSHPath' for SSH Keys doesn't exist."
+        Write-Host "$($UTF.CrossMark) Path '$SSHPath' for SSH Keys doesn't exist." -ForegroundColor Red
         return $Global:STATUS_FAILURE
     }
 
