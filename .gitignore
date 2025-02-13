@@ -4,3 +4,6 @@
 
 # Exclude .NET assemblies from source
 *.dll
+
+# Exlude Jetbrains stuff
+/.idea
