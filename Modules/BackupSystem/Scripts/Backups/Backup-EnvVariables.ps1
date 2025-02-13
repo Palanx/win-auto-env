@@ -27,8 +27,8 @@ try
         Remove-Item $BackupLocation -Force
     }
 
-    $envVarsFound = @()
-    $envVarsNotFound = @()
+    $envVarsFound = [System.Collections.ArrayList]@()
+    $envVarsNotFound = [System.Collections.ArrayList]@()
     # Backup each variable
     foreach ($var in $envVars)
     {
@@ -56,11 +56,11 @@ try
     {
         Write-Host "$($UTF.CheckMark) '$Name' Backup completed with some fails! Saved to: '$BackupLocation'" -ForegroundColor DarkGreen
         Write-Host "Env Variables not found: " -ForegroundColor DarkRed
-        $envVarsNotFound | Format-Table -AutoSize
+        $pathsNotFound | ForEach-Object { Write-Host "- $_" -ForegroundColor DarkRed }
     }
     else
     {
-        WWrite-Host "$($UTF.CheckMark) '$Name' Backup completed! Saved to: '$BackupLocation'" -ForegroundColor Green
+        Write-Host "$($UTF.CheckMark) '$Name' Backup completed! Saved to: '$BackupLocation'" -ForegroundColor Green
     }
     return $Global:STATUS_SUCCESS
 }

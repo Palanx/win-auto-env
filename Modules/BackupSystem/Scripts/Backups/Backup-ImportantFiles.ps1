@@ -22,8 +22,8 @@ try
 
     Write-Host "Backing up '$Name'..."
 
-    $pathsFound = @()
-    $pathsNotFound = @()
+    $pathsFound = [System.Collections.ArrayList]@()
+    $pathsNotFound = [System.Collections.ArrayList]@()
     foreach ($path in $pathsToBackup) {
         # Expand path to recognize env variables.
         $path = $ExecutionContext.InvokeCommand.ExpandString($path)
@@ -55,7 +55,7 @@ try
     {
         Write-Host "$($UTF.CheckMark) '$Name' Backup completed with some fails! Saved to: '$BackupLocation'" -ForegroundColor DarkGreen
         Write-Host "Paths not found: " -ForegroundColor DarkRed
-        $pathsNotFound | Format-Table -AutoSize
+        $pathsNotFound | ForEach-Object { Write-Host "- $_" -ForegroundColor DarkRed }
     }
     else
     {
