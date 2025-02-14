@@ -1,5 +1,14 @@
 {
   "backups-location": "V:/AutoBackups",
+  "drive-letters-backup-config": {
+    "enabled": true,
+    "name": "Drive Letters",
+    "backup-script": "/Scripts/Backups/Backup-DriveLetters.ps1",
+    "backup-requires-admin": false,
+    "restore-script": "/Scripts/Restores/Restore-DriveLetters.ps1",
+    "restore-requires-admin": true,
+    "backup-location-name": "DriveLettersBackup.txt"
+  },
   "backups-configs": [
     {
       "enabled": true,
@@ -9,15 +18,6 @@
       "restore-script": "/Scripts/Restores/Restore-ChromeProfile.ps1",
       "restore-requires-admin": false,
       "backup-location-name": "ChromeProfileBackup"
-    },
-    {
-      "enabled": true,
-      "name": "Drive Letters",
-      "backup-script": "/Scripts/Backups/Backup-DriveLetters.ps1",
-      "backup-requires-admin": false,
-      "restore-script": "/Scripts/Restores/Restore-DriveLetters.ps1",
-      "restore-requires-admin": true,
-      "backup-location-name": "DriveLettersBackup.txt"
     },
     {
       "enabled": true,

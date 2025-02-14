@@ -25,10 +25,11 @@ $DeviceName = $SystemConfigData.device
 
 # Define Options and their Handlers.
 $BuckupSystemOption = "Backup System"
+$RestoreDriveLetterOption = "Restore Drive Letters"
 $RestoreSystemOption = "Restore System Buckup"
 $AppInstallOption = "App Install"
 $ExitOption = "Exit"
-$Options = @($BuckupSystemOption, $RestoreSystemOption, $AppInstallOption, $ExitOption)
+$Options = @($BuckupSystemOption, $RestoreDriveLetterOption, $RestoreSystemOption, $AppInstallOption, $ExitOption)
 
 # Main loop.
 $mustExit = $false
@@ -44,6 +45,9 @@ do
     {
         $BuckupSystemOption {
             Start-BackupSystem
+        }
+        $RestoreDriveLetterOption {
+            Start-RestoreDriveLetters
         }
         $RestoreSystemOption {
             Start-RestoreSystem

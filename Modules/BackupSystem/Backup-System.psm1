@@ -14,6 +14,9 @@ $BackupConfigData = Get-Content -Path $BackupConfigPath -Raw | ConvertFrom-Json
 # Define the location where the buckups will be stored.
 $BackupsLocation = $BackupConfigData.'backups-location'
 
+# Define the Drive Letters bakup cofnig.
+$DriveLettersBackupConfig = $BackupConfigData.'drive-letters-backup-config'
+
 # Define the collection of backup configs.
 $BackupConfigs = $BackupConfigData.'backups-configs'
 
@@ -32,7 +35,8 @@ function Start-BackupSystem
     }
 
     $failedBackups = 0
-    foreach ($backupConfig in $BackupConfigs)
+    $newBackupConfigs = $BackupConfigs + $DriveLettersBackupConfig
+    foreach ($backupConfig in $newBackupConfigs)
     {
         if (!$backupConfig.enabled)
         {
@@ -96,6 +100,97 @@ function Start-BackupSystem
     Write-Host "Returning to main menu...`n"
 }
 
+function Start-RestoreDriveLetters
+{
+    Write-Header -Title "Restore Drive Letters"
+
+    do
+    {
+        $driveLetter = Read-Host "Write the Drive Letter where the Backup is"
+        $driveLetter = $driveLetter.Trim().ToUpper()
+    } while ($driveLetter -notmatch "^[A-Z]$")
+
+    # Replace the letter by the user provided letter.
+    $specifiedLocation = $BackupsLocation -replace "^.", $driveLetter
+
+    # Validate if the backups folder exist.
+    if (!(Test-Path $specifiedLocation))
+    {
+        Write-Host "Path '$specifiedLocation' for Backups doesn't exist." -ForegroundColor Red
+        Write-Host "Returning to main menu...`n"
+        return;
+    }
+
+    # Validate if there are buckups.
+    $BackupFolderNames = @(Get-ChildItem -Path $specifiedLocation -Directory | Select-Object -ExpandProperty Name)
+    if ($BackupFolderNames.Count -eq 0)
+    {
+        Write-Host "There aren't Backups in '$specifiedLocation' to recover." -ForegroundColor Red
+        Write-Host "Returning to main menu...`n"
+        return;
+    }
+
+    Write-Host "Select a Backup Date to Restore the Drive Letters:" -ForegroundColor White
+
+    # Select the Backup to restore.
+    $selectedIndex = Write-SelectionList -Options $BackupFolderNames
+    $backupFolderName = $BackupFolderNames[$selectedIndex]
+
+    # Define the backup location with selected date included.
+    $backupsLocationWithDate = "$specifiedLocation\$backupFolderName"
+
+    Write-Host "$( $UTF.Pushpin ) Drive Letters Backup '$backupFolderName' selected to be Restored!" -ForegroundColor White
+
+    $infoString = "'$name' Restore Backup '$backupFolderName' process will be executed."
+    Write-Host $infoString -ForegroundColor White
+    Write-Separator -Width $infoString.Length
+
+    $name = $DriveLettersBackupConfig.name
+    $requiresAdmin = $DriveLettersBackupConfig.'restore-requires-admin'
+    $scriptPath = $DriveLettersBackupConfig.'restore-script'
+    $configParameters = $DriveLettersBackupConfig.'extra-parameters'
+    $backupLocationName = $DriveLettersBackupConfig.'backup-location-name'
+
+    $infoString = "'$name' Restore Backup '$backupFolderName' process will be executed."
+    Write-Host $infoString -ForegroundColor White
+    Write-Separator -Width $infoString.Length
+
+    try
+    {
+        # Define backup file location.
+        $backupLocation = "$backupsLocationWithDate\$backupLocationName"
+
+        # Define extra parameters.
+        $extraParameters = @{
+            "Name" = $name
+            "BackupLocation" = "$backupLocation"
+        }
+
+        if ($null -ne $configParameters)
+        {
+            $hashtableParameters = @{ }
+            foreach ($key in $configParameters.PSObject.Properties.Name)
+            {
+                $hashtableParameters[$key] = $configParameters.$key
+            }
+
+            $extraParameters['ExtraParameters'] = $hashtableParameters
+        }
+
+        $exitCode = Invoke-ScriptWithCorrectPermissions -ScriptPath "$ScriptDir$scriptPath" -ExtraParameters $extraParameters -RequiresAdmin $requiresAdmin | Select-Object -Last 1
+        if ($exitCode -ne $Global:STATUS_SUCCESS)
+        {
+            throw "Error executing the '$name' Restore Backup '$backupFolderName' process (Exit Code: $exitCode)"
+        }
+
+        Write-Host "$( $UTF.HeavyCheckMark ) '$name' Restore Backup '$backupFolderName' process completed successfully." -ForegroundColor Green
+    }
+    catch
+    {
+        Write-Host "$( $UTF.CrossMark ) Exception occurred in '$name' Restore Backup '$backupFolderName' process script execution: $( Get-ExceptionDetails $_ )" -ForegroundColor Red
+    }
+}
+
 # Start the Restore System process.
 function Start-RestoreSystem
 {
@@ -132,11 +227,6 @@ function Start-RestoreSystem
     $failedBackups = 0
     foreach ($backupConfig in $BackupConfigs)
     {
-        if (!$backupConfig.enabled)
-        {
-            continue
-        }
-
         $name = $backupConfig.name
         $requiresAdmin = $backupConfig.'restore-requires-admin'
         $scriptPath = $backupConfig.'restore-script'
@@ -196,4 +286,4 @@ function Start-RestoreSystem
 }
 
 # Export the functions.
-Export-ModuleMember -Function Start-BackupSystem, Start-RestoreSystem
+Export-ModuleMember -Function Start-BackupSystem, Start-RestoreDriveLetters, Start-RestoreSystem
