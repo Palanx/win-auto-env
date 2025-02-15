@@ -43,6 +43,11 @@ fire on it or do whatever you want, you're free to do it, I don't care 🙈.
 
 ## How to Run
 
+First run this command in your Terminal to allow script execution in the current User:
+```
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
+
 Double-click the `WinAutoEnv.ps1` file and follow the instructions described in the CLI.
 
 The ideal use is:
@@ -53,6 +58,9 @@ The ideal use is:
 5. Install and Config the Apps.
 
 In that specific order.
+
+> [!IMPORTANT]
+> Remember to move the `WinAutoEnv` app into the Desktop post SO installation, because the Drive Letters will be modified and the paths for the app scripts won't be found.
 
 ---
 
@@ -97,7 +105,6 @@ and is thankful for it. I love you anonymous dood.
 | Git LFS            | winget     | default                      | latest     |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | Fork               | winget     | default                      | latest     |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | Postman            | winget     | default                      | latest     |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-|                    |            |                              |            |
 
 #### OS Apps
 
@@ -108,7 +115,6 @@ and is thankful for it. I love you anonymous dood.
 | Nvidia App         | standalone | default  | latest  |                                                                                                                                                       |
 | Logitech G HUB     | winget     | default  | latest  |                                                                                                                                                       |
 | 7-zip              | winget     | default  | latest  | Download the `SetUserFTA` app to assing the file extensions `.7z`, `.zip`, `.rar`, `.tar`, `.gz`, `.bz2`, `.xz`, `.cab`, `.lzh`, `.arj`, `.z`, `.001` |
-| DirectX            | winget     | default  | latest  |                                                                                                                                                       |
 | MPV                | winget     | default  | latest  |                                                                                                                                                       |
 | Powertoys          | winget     | default  | latest  |                                                                                                                                                       |
 | AutoHotKeys        | winget     | default  | latest  |                                                                                                                                                       |
