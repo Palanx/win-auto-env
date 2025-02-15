@@ -106,7 +106,7 @@ function Start-AppInstall
             }
             else
             {
-                $infoString = "Nothing to install via $installerType."
+                $infoString = "Nothing to install via $installerType for'$category'."
                 Write-Host $infoString -ForegroundColor White
                 Write-Separator -Width $infoString.Length
             }

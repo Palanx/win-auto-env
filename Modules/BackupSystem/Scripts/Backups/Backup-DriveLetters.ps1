@@ -16,7 +16,9 @@ try
     Clear-Content -Path $BackupLocation -ErrorAction SilentlyContinue
 
     Write-Host "Backing up '$Name' assignment..."
-    $drives = Get-WmiObject Win32_Volume | Where-Object { $_.DriveLetter -ne $null } | Select-Object DriveLetter, DeviceID
+    $drives = Get-WmiObject Win32_Volume
+    | Where-Object { $_.DriveLetter -ne $null -and $_.DriveLetter -ne 'C:' }
+    | Select-Object DriveLetter, DeviceID
 
     $drives | ForEach-Object {
         "$( $_.DriveLetter ) $( $_.DeviceID )" | Out-File -Append -FilePath $BackupLocation

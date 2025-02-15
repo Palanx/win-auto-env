@@ -2,6 +2,15 @@
   "winget-packages": [
     {
       "enabled": true,
+      "requires-admin": false,
+      "category": "dev",
+      "package-id": "Microsoft.VisualStudioCode",
+      "package-alias": "Visual Studio Code",
+      "silent": true
+    },
+    {
+      "enabled": true,
+      "requires-admin": false,
       "category": "dev",
       "package-id": "Fork.Fork",
       "package-alias": "Fork",
@@ -9,14 +18,16 @@
     },
     {
       "enabled": true,
+      "requires-admin": false,
       "category": "dev",
       "package-id": "Git.Git",
       "package-alias": "Git",
       "silent": true,
-      "package-extra-parameters": "/VERYSILENT /NORESTART /COMPONENTS=\"git,assoc,assoc_sh,curl,git_lfs,credential_manager\" /TASKS=\"!desktopicon,assoc,assoc_sh\" /EDITOR=\"VisualStudioCode\" /SSH=OpenSSH /CURL=OpenSSL /BASHSHELL=MinTTY /GITPULLBEHAVIOR=Merge /PERFORMANCE=FSCache /CREDENTIALMANAGER=Enabled /SYMLINKS=Disabled /FSMONITOR=Disabled /CRLF=Input"
+      "package-extra-parameters": "--override \"/VERYSILENT /NORESTART /DIR='C:\\Program Files\\Git' /COMPONENTS=icons,assoc,assoc_sh,ext,curl,git_lfs /GROUP=Git /o:EditorOption=VisualStudioCode /o:DefaultBranchOption=master /o:SSHOption=ExternalOpenSSH /o:CURLOption=WinSSL /o:GitPullBehaviorOption=Merge /o:PerformanceTweaksFSCache=Enabled /o:UseCredentialManager=Enabled /o:EnableSymlinks=Disabled /o:EnableFSMonitor=Disabled /o:CRLFOption=LFOnly\""
     },
     {
       "enabled": true,
+      "requires-admin": false,
       "category": "dev",
       "package-id": "GitHub.GitLFS",
       "package-alias": "Git LFS",
@@ -24,6 +35,7 @@
     },
     {
       "enabled": true,
+      "requires-admin": false,
       "category": "dev",
       "package-id": "GoLang.Go",
       "package-alias": "Go",
@@ -34,6 +46,7 @@
     },
     {
       "enabled": true,
+      "requires-admin": false,
       "category": "dev",
       "package-id": "JetBrains.Toolbox",
       "package-alias": "JetBrain Toolbox",
@@ -43,6 +56,7 @@
     },
     {
       "enabled": true,
+      "requires-admin": false,
       "category": "dev",
       "package-id": "OpenJS.NodeJS.LTS",
       "package-alias": "Node",
@@ -50,6 +64,7 @@
     },
     {
       "enabled": true,
+      "requires-admin": false,
       "category": "dev",
       "package-id": "Postman.Postman",
       "package-alias": "Postman",
@@ -57,6 +72,7 @@
     },
     {
       "enabled": true,
+      "requires-admin": false,
       "category": "dev",
       "package-id": "Microsoft.PowerShell",
       "package-alias": "PowerShell",
@@ -64,13 +80,7 @@
     },
     {
       "enabled": true,
-      "category": "dev",
-      "package-id": "Microsoft.VisualStudioCode",
-      "package-alias": "Visual Studio Code",
-      "silent": true
-    },
-    {
-      "enabled": true,
+      "requires-admin": false,
       "category": "dev",
       "package-id": "Microsoft.WindowsSDK.10.0.26100",
       "package-alias": "Windows Software Developer Kit v10.0.26100",
@@ -78,6 +88,7 @@
     },
     {
       "enabled": true,
+      "requires-admin": false,
       "category": "dev",
       "package-id": "Microsoft.WindowsWDK.10.0.26100",
       "package-alias": "Windows Driver Kit v10.0.26100",
@@ -85,6 +96,7 @@
     },
     {
       "enabled": true,
+      "requires-admin": false,
       "category": "dev",
       "package-id": "Microsoft.WindowsTerminal",
       "package-alias": "Windows Terminal",
@@ -92,6 +104,7 @@
     },
     {
       "enabled": true,
+      "requires-admin": false,
       "category": "os",
       "package-id": "7zip.7zip",
       "package-alias": "7Zip",
@@ -101,6 +114,7 @@
     },
     {
       "enabled": true,
+      "requires-admin": false,
       "category": "os",
       "package-id": "AutoHotkey.AutoHotkey",
       "package-alias": "AutoHotkey",
@@ -108,13 +122,7 @@
     },
     {
       "enabled": true,
-      "category": "os",
-      "package-id": "Microsoft.DirectX",
-      "package-alias": "DirectX",
-      "silent": true
-    },
-    {
-      "enabled": true,
+      "requires-admin": false,
       "category": "os",
       "package-id": "Skillbrains.Lightshot",
       "package-alias": "Lightshot",
@@ -124,6 +132,7 @@
     },
     {
       "enabled": true,
+      "requires-admin": false,
       "category": "os",
       "package-id": "Logitech.GHUB",
       "package-alias": "LogitechGHUB",
@@ -131,6 +140,7 @@
     },
     {
       "enabled": true,
+      "requires-admin": false,
       "category": "os",
       "package-id": "mpv.net",
       "package-alias": "MPV",
@@ -138,6 +148,7 @@
     },
     {
       "enabled": true,
+      "requires-admin": false,
       "category": "os",
       "package-id": "Microsoft.PowerToys",
       "package-alias": "Power Toys",
@@ -145,6 +156,7 @@
     },
     {
       "enabled": true,
+      "requires-admin": false,
       "category": "personal",
       "package-id": "Google.Chrome",
       "package-alias": "Chrome",
@@ -152,6 +164,7 @@
     },
     {
       "enabled": true,
+      "requires-admin": false,
       "category": "personal",
       "package-id": "Discord.Discord",
       "package-alias": "Discord",
@@ -159,6 +172,7 @@
     },
     {
       "enabled": true,
+      "requires-admin": false,
       "category": "personal",
       "package-id": "EpicGames.EpicGamesLauncher",
       "package-alias": "Epic",
@@ -167,6 +181,7 @@
     },
     {
       "enabled": true,
+      "requires-admin": false,
       "category": "personal",
       "package-id": "GOG.Galaxy",
       "package-alias": "GoG",
@@ -175,13 +190,15 @@
     },
     {
       "enabled": true,
+      "requires-admin": true,
       "category": "personal",
       "package-id": "Apple.iCloud",
       "package-alias": "iCloud",
-      "silent": false
+      "silent": true
     },
     {
       "enabled": true,
+      "requires-admin": false,
       "category": "personal",
       "package-id": "Obsidian.Obsidian",
       "package-alias": "Obsidian",
@@ -189,6 +206,7 @@
     },
     {
       "enabled": true,
+      "requires-admin": false,
       "category": "personal",
       "package-id": "qBittorrent.qBittorrent",
       "package-alias": "qBittorrent",
@@ -196,6 +214,7 @@
     },
     {
       "enabled": true,
+      "requires-admin": false,
       "category": "personal",
       "package-id": "Spotify.Spotify",
       "package-alias": "Spotify",
@@ -203,6 +222,7 @@
     },
     {
       "enabled": true,
+      "requires-admin": false,
       "category": "personal",
       "package-id": "Valve.Steam",
       "package-alias": "Steam",
@@ -211,6 +231,7 @@
     },
     {
       "enabled": true,
+      "requires-admin": false,
       "category": "personal",
       "package-id": "Telegram.TelegramDesktop",
       "package-alias": "Telegram",
@@ -218,6 +239,7 @@
     },
     {
       "enabled": true,
+      "requires-admin": false,
       "category": "personal",
       "package-id": "9NKSQGP7F2NH",
       "package-alias": "WhatsApp",
@@ -227,6 +249,7 @@
   "win-store-installers": [
     {
       "enabled": true,
+      "requires-admin": false,
       "category": "personal",
       "app-id": "9NBLGGH5R558",
       "app-alias": "Windows to Do"

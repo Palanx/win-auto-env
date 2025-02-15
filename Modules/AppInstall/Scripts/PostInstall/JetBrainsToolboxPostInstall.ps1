@@ -9,15 +9,27 @@ Import-Module "$ScriptDir\..\..\..\Core.psm1"
 $ToolboxSettingsPath = "$env:LOCALAPPDATA\JetBrains\Toolbox\.settings.json"
 $CustomInstallPath = "D:\Program Files\JetBrains\Toolbox"
 
+# Define timer vars.
+$timeout = 10  # Timeout in seconds
+$elapsed = 0
+
 try
 {
     # Run the Toolbox for first time to generate the settings file.
     Start-Process -FilePath "$env:LOCALAPPDATA\JetBrains\Toolbox\bin\jetbrains-toolbox.exe"
 
+    Write-Host "Waiting for Toolbox to generate settings file..."
+
+    # Loop until file is created or timeout is reached
+    while (!(Test-Path $ToolboxSettingsPath) -and ($elapsed -lt $timeout)) {
+        Start-Sleep -Seconds 1
+        $elapsed++
+    }
+
     # Ensure Toolbox settings file exists.
     if (!(Test-Path $ToolboxSettingsPath))
     {
-        throw "Toolbox settings file not found. Ensure Toolbox has been opened at least once."
+        throw "Timeout: Toolbox settings file not found. Ensure Toolbox has been opened at least once."
         return $Global:STATUS_FAILURE
     }
     else

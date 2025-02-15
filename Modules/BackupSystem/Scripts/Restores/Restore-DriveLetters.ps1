@@ -27,18 +27,39 @@ try
     foreach ($line in $backupData)
     {
         $parts = $line -split " "
-        $driveLetter = $parts[0]
+        $driveLetter = $parts[0] # Original Drive Letter
         $deviceID = $parts[1]
 
         $drive = Get-WmiObject Win32_Volume | Where-Object { $_.DeviceID -eq $deviceID }
         if ($drive)
         {
+            # Unmount current drive letter if assigned.
+            if ($drive.DriveLetter)
+            {
+                Write-Host "Unmounting current drive letter $( $drive.DriveLetter ) for $deviceID..."
+                $drive.DriveLetter = $null
+                $drive.Put()
+                Start-Sleep -Seconds 1
+            }
+
+            # Ensure the target drive letter is unmounted before assigning it.
+            $existingDrive = Get-WmiObject Win32_Volume | Where-Object { $_.DriveLetter -eq $driveLetter }
+            if ($existingDrive)
+            {
+                Write-Host "Unmounting existing assignment of drive letter $driveLetter..."
+                $existingDrive.DriveLetter = $null
+                $existingDrive.Put()
+                Start-Sleep -Seconds 1
+            }
+
+            # Reassign the drive letter.
             Write-Host "Assigning $driveLetter to $( $drive.DeviceID )..."
             $drive.DriveLetter = $driveLetter
             $drive.Put()
         }
     }
 
+    # Restart Windows Explorer to apply changes.
     Restart-Explorer
 
     Write-Host "$( $UTF.CheckMark ) '$Name' Backup Restore completed!" -ForegroundColor Green

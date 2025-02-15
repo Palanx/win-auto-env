@@ -16,8 +16,9 @@ function Start-WingetInstallation
     [string]$packageAlias = $Config.'package-alias'
     [string]$extraParameters = $Config.'package-extra-parameters'
     [bool]$silent = $Config.'silent'
+    [bool]$requiresAdmin = $Config.'requires-admin'
 
-    [int]$wingetInstallationExitCode = Start-InstallWingetPackage -PackageID $packageId -PackageAlias $packageAlias -ExtraParameters $extraParameters -Silent $silent
+    [int]$wingetInstallationExitCode = Start-InstallWingetPackage -PackageID $packageId -PackageAlias $packageAlias -ExtraParameters $extraParameters -Silent $silent -RequiresAdmin $requiresAdmin
 
     if ($wingetInstallationExitCode -eq $Global:STATUS_FAILURE)
     {
@@ -45,8 +46,9 @@ function Start-WinStoreInstallation
 
     [string]$appID = $Config.'app-id'
     [string]$appAlias = $Config.'app-alias'
+    [string]$requiresAdmin = $Config.'requires-admin'
 
-    [int]$wingetInstallationExitCode = Start-InstallWinStorePackage -PackageID $appID -PackageAlias $appAlias
+    [int]$wingetInstallationExitCode = Start-InstallWinStorePackage -PackageID $appID -PackageAlias $appAlias -RequiresAdmin $requiresAdmin
 
     if ($wingetInstallationExitCode -eq $Global:STATUS_FAILURE)
     {
@@ -73,11 +75,11 @@ function Get-IsWingetPackageInstalled
         [string]$PackageAlias
     )
 
-    # Get list of installed packages from winget.
-    $installedPackages = winget list --id $PackageID 2> $null
+    # Try to get the package, to know if it's installed.
+    $installedPackage = winget list --disable-interactivity | Where-Object { $_ -match $PackageID }
 
     # Check if the package appears in the installed list.
-    if ($installedPackages -match $PackageID)
+    if ($installedPackage)
     {
         Write-Host "$( $UTF.HeavyCheckMark ) Package '$PackageAlias' of ID '$PackageID' is already installed." -ForegroundColor Green
         return $true
@@ -96,7 +98,8 @@ function Start-InstallWingetPackage
         [string]$PackageID,
         [string]$PackageAlias,
         [string]$ExtraParameters,
-        [bool]$Silent
+        [bool]$Silent,
+        [bool]$RequiresAdmin
     )
 
     try
@@ -116,18 +119,35 @@ function Start-InstallWingetPackage
         {
             "--silent"
         }
-        $process = Start-Process -FilePath "winget" -ArgumentList "install -e --id $PackageID $silentParameter $ExtraParameters" -NoNewWindow -PassThru -Wait
-        $process.WaitForExit()
+
+        $argumentList = "install -e --id $PackageID $silentParameter $ExtraParameters";
+        # The winget install run a new admin shell.
+        if ($RequiresAdmin -and -not (Get-IsAdmin))
+        {
+            $exitCode = Invoke-WingetInstallAs -asAdmin $true -packageID $PackageID -argumentList $argumentList
+        }
+        # The winget install run a new non-admin shell (simulates running in the same window).
+        elseif (-not $RequiresAdmin -and (Get-IsAdmin))
+        {
+            $exitCode = Invoke-WingetInstallAs -asAdmin $false -packageID $PackageID -argumentList $argumentList
+        }
+        # The winget install is running with correct permissions.
+        else
+        {
+            $process = Start-Process -FilePath "winget" -ArgumentList "$argumentList" -NoNewWindow -PassThru -Wait
+            $process.WaitForExit()
+            $exitCode = $process.ExitCode
+        }
 
         # Check the last exit code.
-        if ($process.ExitCode -eq 0)
+        if ($exitCode -eq 0)
         {
             Write-Host "$( $UTF.HeavyCheckMark ) Package '$PackageAlias' of ID '$PackageID' in NOW installed." -ForegroundColor Green
             return $Global:STATUS_SUCCESS
         }
 
-        Write-Host "$( $UTF.CrossMark ) Error installing '$PackageAlias' by winget (Exit Code: $( $process.ExitCode ))" -ForegroundColor Red
-        return $process.ExitCode
+        Write-Host "$( $UTF.CrossMark ) Error installing '$PackageAlias' by winget (Exit Code: $( $exitCode ))" -ForegroundColor Red
+        return $exitCode
     }
     catch
     {
@@ -141,7 +161,8 @@ function Start-InstallWinStorePackage
 {
     param (
         [string]$PackageID,
-        [string]$PackageAlias
+        [string]$PackageAlias,
+        [bool]$RequiresAdmin
     )
 
     try
@@ -153,24 +174,102 @@ function Start-InstallWinStorePackage
         }
 
         Write-Host "$( $UTF.HourGlass ) Installing windoes store package '$PackageAlias'..." -ForegroundColor Yellow
-        $process = Start-Process -FilePath "winget" -ArgumentList "install --id $PackageID --source msstore --accept-package-agreements" -NoNewWindow -PassThru -Wait
-        $process.WaitForExit()
+
+        $argumentList = "install --id $PackageID --source msstore --accept-package-agreements";
+        # The winget install run a new admin shell.
+        if ($RequiresAdmin -and -not (Get-IsAdmin))
+        {
+            $exitCode = Invoke-WingetInstallAs -asAdmin $true -packageID $PackageID -argumentList $argumentList
+        }
+        # The winget install run a new non-admin shell (simulates running in the same window).
+        elseif (-not $RequiresAdmin -and (Get-IsAdmin))
+        {
+            $exitCode = Invoke-WingetInstallAs -asAdmin $false -packageID $PackageID -argumentList $argumentList
+        }
+        # The winget install is running with correct permissions.
+        else
+        {
+            $process = Start-Process -FilePath "winget" -ArgumentList "$argumentList" -NoNewWindow -PassThru -Wait
+            $process.WaitForExit()
+            $exitCode = $process.ExitCode
+        }
 
         # Check the last exit code.
-        if ($process.ExitCode -eq 0)
+        if ($exitCode -eq 0)
         {
             Write-Host "$( $UTF.HeavyCheckMark ) Package '$PackageAlias' of ID '$PackageID' in NOW installed." -ForegroundColor Green
             return $Global:STATUS_SUCCESS
         }
 
-        Write-Host "$( $UTF.CrossMark ) Error installing windows store package '$PackageAlias' by winget (Exit Code: $( $process.ExitCode ))" -ForegroundColor Red
-        return $process.ExitCode
+        Write-Host "$( $UTF.CrossMark ) Error installing windows store package '$PackageAlias' by winget (Exit Code: $( $exitCode ))" -ForegroundColor Red
+        return $exitCode
     }
     catch
     {
         Write-Host "$( $UTF.CrossMark ) Exception occurred in '$PackageAlias' windows store installation by winget: $( Get-ExceptionDetails $_ )" -ForegroundColor Red
         return $Global:STATUS_FAILURE
     }
+}
+
+# Run a Winget Install as Admin or User.
+function Invoke-WingetInstallAs
+{
+    param (
+        [bool]$asAdmin,
+        [string]$scriptPath,
+        [string]$argumentList = ""
+    )
+
+    # Define the role text.
+    if ($asAdmin)
+    {
+        $role = "Admin"
+    }
+    else
+    {
+        $role = "User"
+    }
+
+    Write-Host "Executing Winget Install as $role in new shell..." -ForegroundColor DarkMagenta
+
+    # Create a temporary file to store the exit code.
+    $tempFile = [System.IO.Path]::GetTempFileName()
+
+    # Build the PowerShell command to execute and return the exit code in a shell.
+    $command = @"
+`$process = Start-Process -FilePath 'winget' -ArgumentList '$argumentList' -NoNewWindow -PassThru -Wait;
+`$process.WaitForExit();
+`$exitCode = `$process.ExitCode;
+`$exitCode | Out-File -FilePath `"$tempFile`" -NoNewline;
+Write-Host "Winget Installation completed as $role, Press Enter to exit..."
+Read-Host
+"@
+
+    # Run the shell and execute the command.
+    if ($asAdmin)
+    {
+        $process = Start-Process PowerShell -ArgumentList "-NoProfile -ExecutionPolicy Bypass -Command `"$command`"" -Verb RunAs -PassThru -Wait
+    }
+    else
+    {
+        $process = Start-Process PowerShell -ArgumentList "-NoProfile -ExecutionPolicy Bypass -Command `"$command`"" -PassThru -Wait
+    }
+    $process.WaitForExit()
+
+    # Get the exit code stored in the temp file.
+    $exitCode = Get-Content $tempFile -Raw
+    # Fallback in cases where exit code isn't returned because of an exception.
+    if (!([int]::TryParse($exitCode, [ref]$null)))
+    {
+        $exitCode = $Global:STATUS_FAILURE
+    }
+
+    # Remove the temp file used to store the exit code.
+    Remove-Item $tempFile -Force
+
+    Write-Host "Closed $role shell. Exit Code: $exitCode" -ForegroundColor DarkMagenta
+
+    return $exitCode
 }
 
 # Run a post winget package installation script.
