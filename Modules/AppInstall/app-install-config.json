@@ -177,7 +177,7 @@
       "package-id": "EpicGames.EpicGamesLauncher",
       "package-alias": "Epic",
       "silent": true,
-      "location": "G:/Program Files (x86)/Epic Games"
+      "package-extra-parameters": "--override \"INSTALLDIR=\\\"G:\\\\Program Files (x86)\\\\Epic Games\\\"\""
     },
     {
       "enabled": true,
