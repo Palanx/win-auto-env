@@ -45,6 +45,15 @@ fire on it or do whatever you want, you're free to do it, I don't care 🙈.
 
 Double-click the `WinAutoEnv.ps1` file and follow the instructions described in the CLI.
 
+The ideal use is:
+1. Create the Backups.
+2. Format your PC.
+3. Recover the Drive Letters.
+4. Recover the Backups.
+5. Install and Config the Apps.
+
+In that specific order.
+
 ---
 
 ## I love you
