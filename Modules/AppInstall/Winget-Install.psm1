@@ -20,7 +20,7 @@ function Start-WingetInstallation
     [string]$location = $Config.'location'
     if ($location.Length -gt 0)
     {
-        $extraParameters += "--location '$location'"
+        $extraParameters += "--location `"$location`""
     }
 
     [int]$wingetInstallationExitCode = Start-InstallWingetPackage -PackageID $packageId -PackageAlias $packageAlias -ExtraParameters $extraParameters -Silent $silent -RequiresAdmin $requiresAdmin
@@ -126,6 +126,7 @@ function Start-InstallWingetPackage
         }
 
         $argumentList = "install -e --id $PackageID $silentParameter $ExtraParameters";
+        Write-Host $argumentList
         # The winget install run a new admin shell.
         if ($RequiresAdmin -and -not (Get-IsAdmin))
         {
