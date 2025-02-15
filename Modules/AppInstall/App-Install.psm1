@@ -98,6 +98,7 @@ function Start-AppInstall
                         }
                         catch
                         {
+                            Write-Host "$( $UTF.CrossMark ) Exception thrown while processing Installer config: $( Get-ExceptionDetails $_ )" -ForegroundColor Red
                             $failedInstallations++
                         }
                     }
@@ -106,7 +107,7 @@ function Start-AppInstall
             }
             else
             {
-                $infoString = "Nothing to install via $installerType for'$category'."
+                $infoString = "Nothing to install via $installerType for '$category'."
                 Write-Host $infoString -ForegroundColor White
                 Write-Separator -Width $infoString.Length
             }

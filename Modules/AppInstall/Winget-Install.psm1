@@ -46,7 +46,7 @@ function Start-WinStoreInstallation
 
     [string]$appID = $Config.'app-id'
     [string]$appAlias = $Config.'app-alias'
-    [string]$requiresAdmin = $Config.'requires-admin'
+    [bool]$requiresAdmin = $Config.'requires-admin'
 
     [int]$wingetInstallationExitCode = Start-InstallWinStorePackage -PackageID $appID -PackageAlias $appAlias -RequiresAdmin $requiresAdmin
 
