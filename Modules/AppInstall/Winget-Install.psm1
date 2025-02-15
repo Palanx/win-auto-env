@@ -17,6 +17,11 @@ function Start-WingetInstallation
     [string]$extraParameters = $Config.'package-extra-parameters'
     [bool]$silent = $Config.'silent'
     [bool]$requiresAdmin = $Config.'requires-admin'
+    [string]$location = $Config.'location'
+    if ($location.Length -gt 0)
+    {
+        $extraParameters += "--location '$location'"
+    }
 
     [int]$wingetInstallationExitCode = Start-InstallWingetPackage -PackageID $packageId -PackageAlias $packageAlias -ExtraParameters $extraParameters -Silent $silent -RequiresAdmin $requiresAdmin
 
