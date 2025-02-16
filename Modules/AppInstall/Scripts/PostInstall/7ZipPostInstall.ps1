@@ -6,53 +6,67 @@ Import-Module "$ScriptDir\..\..\..\Constants.psm1"
 Import-Module "$ScriptDir\..\..\..\Core.psm1"
 
 # Define paths
-$ProgID = "7zFM.exe"
-$7zLocation = "C:\Program Files\7-Zip\7zFM.exe"
-$SetUserFTA = "$env:USERPROFILE\Downloads\SetUserFTA.exe"
+$7zLocation = "C:\Program Files\7-Zip"
+$RegPath = "HKCU:\Software\Classes\"
+$FileExtensRegPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts"
 
 # List of file extensions to associate with 7-Zip.
-$Extensions = @(".7z", ".zip", ".rar", ".tar", ".gz", ".bz2", ".xz", ".cab", ".lzh", ".arj", ".z", ".001")
+$ExtensionsWithIconIndex= @{
+    "7z"  = 0
+    "zip" = 1
+    "rar" = 3
+    "tar" = 4
+    "gz"  = 5
+    "bz2" = 6
+    "xz"  = 7
+    "cab" = 2
+    "lzh" = 9
+    "arj" = 10
+    "z"   = 11
+    "001" = 12
+}
 
 try
 {
-    # Download SetUserFTA.exe if not found.
-    if (!(Test-Path $SetUserFTA))
-    {
-        Write-Host "Downloading SetUserFTA..." -ForegroundColor Yellow
-        $response = Invoke-WebRequest -Uri "https://github.com/qis/windows/raw/refs/heads/master/setup/SetUserFTA/SetUserFTA.exe" -OutFile $SetUserFTA -UseBasicParsing
-        $statusCode = $response.StatusCode
-
-        # Check the status code.
-        if ($statusCode -ne 200)
-        {
-            Write-Host "$( $UTF.CheckMark ) SetUserFTA in NOW downloaded." -ForegroundColor DarkMagenta
-        }
-        else
-        {
-            Write-Host "$( $UTF.CrossMark ) 7-Zip setup incomplete!" -ForegroundColor Red
-            throw "Error downloading SetUserFTA (Status Code: $statusCode)"
-        }
-    }
-    else
-    {
-        Write-Host "$( $UTF.CheckMark ) SetUserFTA already downloaded." -ForegroundColor Green
-    }
-
-    # Register the 7Zip ProgID.
-    $registerExitCode = Register-ProgID -ProgID $ProgID -ProgramName "7-Zip File Manager" -AppPath $7zLocation
-    if ($registerExitCode -ne $Global:STATUS_SUCCESS)
-    {
-        return $registerExitCode;
-    }
-
     # Track failed 7-Zip associations.
     $FailedAssociations = @()
 
     # Assign file types to 7-Zip.
     Write-Host "Setting file associations..." -ForegroundColor Yellow
-    foreach ($ext in $extensions)
+    foreach ($ext in $ExtensionsWithIconIndex.Keys)
     {
-        $output = & $SetUserFTA $ext $ProgID 2>&1
+        $iconIndex = $ExtensionsWithIconIndex[$ext]
+        $fileType = "7-Zip.$ext"
+
+        $defaultExtKey = "$RegPath\.$ext"
+        $default7ZipExtKey = "$RegPath\$fileType"
+        $defaultIconKey = "$default7ZipExtKey\DefaultIcon"
+        $defaultShell = "$default7ZipExtKey\shell"
+        $defaultOpen = "$defaultShell\open"
+        $defaultCommand = "$defaultOpen\command"
+        $openWithProgIdsKey = "$FileExtensRegPath\.$ext\OpenWithProgids"
+
+        # Check if the registry key exists, if not, create it.
+        if (-not (Test-Path $defaultExtKey)) {
+            New-Item -Path $defaultExtKey -Force | Out-Null
+        }
+        if (-not (Test-Path $default7ZipExtKey)) {
+            New-Item -Path $default7ZipExtKey -Force | Out-Null
+            New-Item -Path $defaultIconKey -Force | Out-Null
+            New-Item -Path $defaultCommand -Force | Out-Null
+        }
+        if (-not (Test-Path $openWithProgIdsKey)) {
+            New-Item -Path $openWithProgIdsKey -Force | Out-Null
+        }
+        New-ItemProperty -Path $openWithProgIdsKey -Name "$fileType" -Value '' -PropertyType String -Force | Out-Null
+
+        # Associate the extension.
+        $output += Set-ItemProperty -Path $defaultExtKey -Name "(Default)" -Value $fileType -Force
+        $output += Set-ItemProperty -Path $default7ZipExtKey -Name "(Default)" -Value "$ext Archive" -Force
+        $output += Set-ItemProperty -Path $defaultIconKey -Name "(Default)" -Value "$($7zLocation)\7z.dll,$iconIndex" -Force
+        $output += Set-ItemProperty -Path $defaultShell -Name "(Default)" -Value '' -Force
+        $output += Set-ItemProperty -Path $defaultOpen -Name "(Default)" -Value '' -Force
+        $output += Set-ItemProperty -Path $defaultCommand -Name "(Default)" -Value "`"$($7zLocation)\7zFM.exe`" `"%1`"" -Force
 
         # Check the last exit code.
         if (!$output)
@@ -72,6 +86,8 @@ try
     }
 
     Write-Host "$( $UTF.CheckMark ) 7-Zip setup completed." -ForegroundColor Green
+    Write-Host "$( $UTF.WarningSign ) For secury reasons, the Default App to 'Open With' a file extension can't be modified by script," -ForegroundColor Yellow
+    Write-Host "but the config was made, so the correct icon and path will be used when you open the files after assing the Default App to the extension." -ForegroundColor Yellow
     return $Global:STATUS_SUCCESS
 }
 catch
